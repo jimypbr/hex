@@ -1,0 +1,40 @@
+Text based Hex game.
+
+Want to create the user interface to the Hex game first.
+There will be a Game class.
+This will draw the board and its stones.
+There will be grid coordinates along the board.
+The user will be prompted to enter in the coordinate of the position he wishes
+to place his next stone.
+Invalid coordinates will be refused. Coordinates of positions where there is a stone already will
+be refused.
+
+There will be a Board class. Board will be an array of board points with info on if there is a stone at that
+point and if so what type.
+This class with have a method for placing a stone at some coordinate.
+This class will have a method that returns a list of empty places.
+THis class will have a method that determines which player has won given a full board.
+
+CliInterface will look like this:
+                    A B C D E F G H I
+                 1   . . . . . . . . .   1
+                  2   . . . . . . . . .   2
+                   3   . . . . . . . . .   3
+                    4   . . . . V . . . .   4
+                     5   . . . V . V . . .   5
+                      6   . . . . . . . . .   6
+                       7   . . . H . H . . .   7
+                        8   . H . . . . . . .   8
+                         9   . . . . . . . . .   9
+      						 A B C D E F G H I             
+Where V = vertical and H = horizontal
+
+
+There will be a class for the AI player.
+AIplayer will have a method that takes a game board object as an argument, generates a next move 
+and updates the boards state with that move. 
+This will be implemented as being purely random at first as a prototype.
+This class will later need a move tree that needs to be calculated.
+
+
+
