@@ -1,8 +1,9 @@
 
+/*
 #include <vector>
 #include <ostream>
 #include <iostream>
-#include "board.hpp"
+#include "board.h"
 
 Hex_Board::Hex_Board(int s) : N(s), N2(s*s), tiles(s*s), nEmpty(s*s)
 {
@@ -66,3 +67,5 @@ std::ostream& operator<< (std::ostream& out, const Hex_Board& board)
 	}
 	out << "   A  B  C  D  E" << std::endl;
 }
+
+*/

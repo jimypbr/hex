@@ -1,12 +1,12 @@
 
 #include <iostream>
 #include <vector>
-#include "cli_hex.hpp"
+#include "cli_hex.h"
 
 int main(int argc, char* argv[])
 {
 	CLI_Hex cli_hex;
-	cli_hex.play_game();
+	cli_hex.gameLoop();
 
 	return 0;
 }

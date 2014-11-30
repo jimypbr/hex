@@ -1,24 +1,29 @@
-#ifndef H_HEXBOARD
-#define H_HEXBOARD
+#pragma once
 
 #include <vector>
 
-enum tile_colour_t {EMPTY, WHITE, BLACK};
+enum class TileColour {EMPTY, WHITE, BLACK};
 
+typedef std::vector<TileColour> HexBoard;
+/*
 class Hex_Board
 {
 	private:
 		std::vector<tile_colour_t> tiles;
-		int N;		// length of side of hex board
-		int N2;		// N**2
-		int nEmpty;
 
 	public:
-		Hex_Board(int s);
-		Hex_Board();
+		Hex_Board(int s) : tiles(s*s)
+		{
+			for (auto &it : tiles)
+				it = EMPTY;
+		}
+		Hex_Board() : tiles(5*5)
+		{
+			for (auto &it : tiles)
+				it = EMPTY;
+		}
 		void place_piece(tile_colour_t colour, int x, int y);
 		bool valid_coord(int x, int y);
 		friend std::ostream& operator<< (std::ostream& out, const Hex_Board& board);
 };
-
-#endif
+*/
