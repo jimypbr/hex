@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/user/programming/cpp4c/hex/board.h
+vector
+-
+
+/Users/user/programming/cpp4c/hex/hexGraph.cpp
+vector
+-
+algorithm
+-
+iostream
+-
+hexGraph.h
+/Users/user/programming/cpp4c/hex/hexGraph.h
+board.h
+/Users/user/programming/cpp4c/hex/board.h
+
+/Users/user/programming/cpp4c/hex/hexGraph.h
+vector
+-
+board.h
+/Users/user/programming/cpp4c/hex/board.h
+

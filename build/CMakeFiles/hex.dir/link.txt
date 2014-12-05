@@ -1,0 +1,1 @@
+g++   -g -Wall -std=c++11 -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/hex.dir/main.cpp.o CMakeFiles/hex.dir/cli_hex.cpp.o CMakeFiles/hex.dir/game.cpp.o CMakeFiles/hex.dir/hexGraph.cpp.o CMakeFiles/hex.dir/aiPlayer.cpp.o  -o hex  
