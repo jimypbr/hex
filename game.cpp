@@ -38,9 +38,6 @@ bool HexGame :: isFinished() const
 	bool whiteWon = hgraph_.whiteWon(main_board_);	
 	bool blackWon = hgraph_.blackWon(main_board_);	
 
-	std::cout << "game.cpp: whiteWon = " << whiteWon << std::endl;
-	std::cout << "game.cpp: blackWon = " << blackWon << std::endl;
-
 	return (whiteWon || blackWon);
 }
 

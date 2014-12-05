@@ -16,6 +16,7 @@ void CLI_Hex :: gameLoop()
 	{
 		userInputMove_();
 		game_.aiMove();
+		clearScreen_();
 		printBoard_();
 	}
 	std::cout << "Game finished!!" << std::endl;
@@ -92,12 +93,13 @@ inline void CLI_Hex :: printBoard_()
 			else if (tile == TileColour::BLACK)
 				std::cout << "B  ";
 			else
-				std::cout << ".  ";
+				std::cout << "-  ";
 		}
 		std::cout << " " << row+1 << std::endl;
 		std::cout << std::string(row+1,' ');	// indent next row
 	}
 	std::cout << "   A  B  C  D  E" << std::endl;
+	std::cout << std::endl;
 }
 
 inline void CLI_Hex :: printWinner_(TileColour winner)
@@ -114,4 +116,10 @@ inline void CLI_Hex :: printWinner_(TileColour winner)
 			std::cout << "Winner is wat" << std::endl;
 			break;
 	}
+}
+
+inline void CLI_Hex :: clearScreen_()
+{
+	// hacky but works
+	std::cout << std::string (100, '\n');
 }

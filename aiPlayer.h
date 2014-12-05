@@ -10,8 +10,8 @@ class AIPlayer
 	private:
 		int side_;
 		int ntiles_;
-		std::default_random_engine rng_;
 		std::uniform_int_distribution<int> rng_uniform_;
+		std::default_random_engine rng_;
 	
 	public:
 		AIPlayer (int s) : side_(s), ntiles_(s*s), rng_uniform_(0,s-1)

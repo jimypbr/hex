@@ -1,6 +1,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <iostream>
 #include "hexGraph.h"
 #include "board.h"
 
@@ -31,6 +32,14 @@ bool HexGraph :: whiteWon (const HexBoard& board) const
 		bool is_open = ( board[row*board_side_ + board_side_-1] == TileColour::WHITE ) && \
 					   ( prev_open[board_side_-1] );
 		curr_open[board_side_-1] = is_open;
+
+		// check for left->right connection on this row
+		for (int col=1; col < board_side_; ++col)
+		{
+			if ( (curr_open[col-1] == true) && !(curr_open[col]) )
+				if ( board[row*board_side_ + col] == TileColour::WHITE)
+					curr_open[col] = true;
+		}
 
 		if (row != (board_side_-1))
 			std::swap(prev_open, curr_open);
@@ -76,6 +85,14 @@ bool HexGraph :: blackWon (const HexBoard& board) const
 		bool is_open = ( board[board_side_*board_side_-1] == TileColour::BLACK ) && \
 					   ( prev_open[board_side_-1] );
 		curr_open[board_side_-1] = is_open;
+
+		// check for up->down connection on this column
+		for (int row=1; row < board_side_; ++row)
+		{
+			if ( (curr_open[row-1] == true) && !(curr_open[row]) )
+				if ( board[row*board_side_ + col] == TileColour::BLACK)
+					curr_open[row] = true;
+		}
 
 		if (col != (board_side_-1))
 			std::swap(prev_open, curr_open);

@@ -7,13 +7,13 @@
 class HexGame
 {
 	private:
+		int side_;
+		int ntiles_;
 		HexBoard main_board_;
 		HexGraph hgraph_;
 		AIPlayer ai_;
 		TileColour user_colour_;
 		TileColour ai_colour_;
-		int ntiles_;
-		int side_;
 
 	public:
 		HexGame(int s) : side_(s), ntiles_(s*s), main_board_(s*s), \
