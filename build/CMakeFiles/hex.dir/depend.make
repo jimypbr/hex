@@ -4,6 +4,7 @@
 CMakeFiles/hex.dir/aiPlayer.cpp.o: ../aiPlayer.cpp
 CMakeFiles/hex.dir/aiPlayer.cpp.o: ../aiPlayer.h
 CMakeFiles/hex.dir/aiPlayer.cpp.o: ../board.h
+CMakeFiles/hex.dir/aiPlayer.cpp.o: ../hexGraph.h
 
 CMakeFiles/hex.dir/cli_hex.cpp.o: ../aiPlayer.h
 CMakeFiles/hex.dir/cli_hex.cpp.o: ../board.h

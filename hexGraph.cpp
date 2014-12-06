@@ -110,3 +110,17 @@ bool HexGraph :: blackWon (const HexBoard& board) const
 
 	return is_winner;
 }
+
+TileColour HexGraph :: fullBoardWinner (const HexBoard& board) const
+{
+	// for special case of a full board only need to evaluate if one of the players won 
+	// since they can only have opposite values
+	
+	// evaluate if whiteWon since it has better memory access pattern than blackWon
+	bool white_won = whiteWon(board);
+
+	if (white_won)
+		return TileColour::WHITE;
+	else
+		return TileColour::BLACK;
+}

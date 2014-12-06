@@ -29,7 +29,7 @@ bool HexGame :: move (int x, int y)
 
 void HexGame :: aiMove ()
 {
-	std::pair<int,int> coord = ai_.nextMove(main_board_);
+	std::pair<int,int> coord = ai_.nextMove(main_board_, hgraph_);
 	main_board_[coord.first * side_ + coord.second] = TileColour::BLACK;
 }
 
