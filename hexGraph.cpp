@@ -1,11 +1,10 @@
 
 #include <vector>
-#include <algorithm>
 #include <iostream>
 #include "hexGraph.h"
 #include "board.h"
 
-bool HexGraph :: whiteWon (const HexBoard& board) const
+bool HexGraph :: whiteWon(const HexBoard& board) const
 {
 	std::vector<bool> prev_open(board_side_);
 	std::vector<bool> curr_open(board_side_);
@@ -58,7 +57,7 @@ bool HexGraph :: whiteWon (const HexBoard& board) const
 	return is_winner;
 }
 
-bool HexGraph :: blackWon (const HexBoard& board) const
+bool HexGraph :: blackWon(const HexBoard& board) const
 {
 	std::vector<bool> prev_open(board_side_);
 	std::vector<bool> curr_open(board_side_);
@@ -111,7 +110,7 @@ bool HexGraph :: blackWon (const HexBoard& board) const
 	return is_winner;
 }
 
-TileColour HexGraph :: fullBoardWinner (const HexBoard& board) const
+TileColour HexGraph :: fullBoardWinner(const HexBoard& board) const
 {
 	// for special case of a full board only need to evaluate if one of the players won 
 	// since they can only have opposite values

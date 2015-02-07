@@ -1,6 +1,4 @@
 
-#include <iostream>
-#include <vector>
 #include "cli_hex.h"
 
 int main(int argc, char* argv[])

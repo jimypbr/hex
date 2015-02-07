@@ -19,10 +19,10 @@ class AIPlayer
 		int ntiles_;
 		std::uniform_int_distribution<int> rng_uniform_;
 		std::default_random_engine rng_;
-		int monteCarloScore_(HexBoard& board, const HexGraph& hex_graph, const int niter) const;
+		double monteCarloScore_(HexBoard &board, const HexGraph &hex_graph, const int niter) const;
 		void insertSubBoard_(const EmptyTiles& empty_tiles, HexBoard& board) const;
 		EmptyTiles getEmptyTiles_(const HexBoard& board) const;
-		std::pair<int,int> randomMove_ (HexBoard& board) const;
+		std::pair<int,int> randomMove_(HexBoard& board) const;
 	
 	public:
 		AIPlayer (int s) : side_(s), ntiles_(s*s), rng_uniform_(0,s-1)

@@ -10,7 +10,7 @@
 #include "hexGraph.h"
 #include "aiPlayer.h"
 
-std::pair<int,int> AIPlayer :: nextMove (HexBoard board, const HexGraph& hex_graph) const
+std::pair<int,int> AIPlayer :: nextMove(HexBoard board, const HexGraph& hex_graph) const
 {
 
 	EmptyTiles empty_tiles = getEmptyTiles_(board);
@@ -24,10 +24,10 @@ std::pair<int,int> AIPlayer :: nextMove (HexBoard board, const HexGraph& hex_gra
 	}
 	std::cout << std::endl;
 	*/
-	std::vector<int> next_move_score(nempty,0);
+	std::vector<double> next_move_score(nempty,0);
 
 	// iterate through next possible moves for black and do monte carlo for each
-	const int niter = 5000;
+	const int niter = 40000;
 	for (int i=0; i<nempty; ++i)
 	{
 		int trial_move = empty_tiles.coords[i];
@@ -35,6 +35,13 @@ std::pair<int,int> AIPlayer :: nextMove (HexBoard board, const HexGraph& hex_gra
 		trial_board[trial_move] = TileColour::BLACK;
 		next_move_score[i] = monteCarloScore_(trial_board, hex_graph, niter);
 	}
+
+    // debug
+    for (int i=0; i<nempty; ++i)
+    {
+        std::cout << next_move_score[i] << ", ";
+    }
+    std::cout << std::endl;
 
 	// return coord with highest next move score
 	int addr_empty = std::distance(next_move_score.begin(), std::max_element(next_move_score.begin(), next_move_score.end()) );	
@@ -51,8 +58,7 @@ std::pair<int,int> AIPlayer :: nextMove (HexBoard board, const HexGraph& hex_gra
  * Given a partially filled hex board, return the win/lose ratio for the aiplayer after niter number
  * of monteCarlo trials, which randomly fill the rest of the baord and then calculates who won.
  */
-int AIPlayer :: monteCarloScore_(HexBoard& board, const HexGraph& hex_graph, const int niter) const
-{
+double AIPlayer :: monteCarloScore_(HexBoard &board, const HexGraph &hex_graph, const int niter) const {
 	EmptyTiles empty_tiles = getEmptyTiles_(board);
 	int nempty = empty_tiles.sub_board.size();
 
@@ -84,7 +90,7 @@ int AIPlayer :: monteCarloScore_(HexBoard& board, const HexGraph& hex_graph, con
 			nblack_wins++;
 	}
 
-	return nblack_wins;
+	return (double) nblack_wins / niter;
 }
 
 inline void AIPlayer :: insertSubBoard_(const EmptyTiles& empty_tiles, HexBoard& board) const
@@ -99,7 +105,7 @@ inline void AIPlayer :: insertSubBoard_(const EmptyTiles& empty_tiles, HexBoard&
 	}
 }
 
-inline std::pair<int,int> AIPlayer :: randomMove_ (HexBoard& board) const
+inline std::pair<int,int> AIPlayer :: randomMove_(HexBoard& board) const
 {
 	auto coord_gen = std::bind ( rng_uniform_, rng_ );
 
@@ -119,7 +125,7 @@ inline std::pair<int,int> AIPlayer :: randomMove_ (HexBoard& board) const
 	return coord;
 }
 
-EmptyTiles AIPlayer :: getEmptyTiles_ (const HexBoard& board) const
+EmptyTiles AIPlayer :: getEmptyTiles_(const HexBoard& board) const
 {
 	// count # of empty tiles
 	int n_empty = 0;

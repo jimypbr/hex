@@ -1,7 +1,5 @@
 
 #include <iostream>
-#include <string>
-#include <limits>
 #include "board.h"
 #include "cli_hex.h"
 
@@ -12,12 +10,14 @@ void CLI_Hex :: gameLoop()
 	printBoard_();
 
 	// main loop
-	while (!game_.isFinished())
+	for (;;)
 	{
 		userInputMove_();
+        if (game_.isFinished()) break;
 		game_.aiMove();
 		clearScreen_();
 		printBoard_();
+        if (game_.isFinished()) break;
 	}
 	std::cout << "Game finished!!" << std::endl;
 
@@ -121,5 +121,6 @@ inline void CLI_Hex :: printWinner_(TileColour winner)
 inline void CLI_Hex :: clearScreen_()
 {
 	// hacky but works
-	std::cout << std::string (100, '\n');
+	//std::cout << std::string (100, '\n');
+    std::cout << std::string (2, '\n');
 }
