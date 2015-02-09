@@ -8,9 +8,9 @@
 #include <random>
 #include "board.h"
 #include "hexGraph.h"
-#include "aiPlayer.h"
+#include "pureMonteCarlo.h"
 
-std::pair<int,int> AIPlayer :: nextMove(HexBoard board, const HexGraph& hex_graph) const
+std::pair<int,int> PureMonteCarlo:: nextMove(HexBoard board, const HexGraph& hex_graph) const
 {
 
 	EmptyTiles empty_tiles = getEmptyTiles_(board);
@@ -58,7 +58,7 @@ std::pair<int,int> AIPlayer :: nextMove(HexBoard board, const HexGraph& hex_grap
  * Given a partially filled hex board, return the win/lose ratio for the aiplayer after niter number
  * of monteCarlo trials, which randomly fill the rest of the baord and then calculates who won.
  */
-double AIPlayer :: monteCarloScore_(HexBoard &board, const HexGraph &hex_graph, const int niter) const {
+double PureMonteCarlo:: monteCarloScore_(HexBoard &board, const HexGraph &hex_graph, const int niter) const {
 	EmptyTiles empty_tiles = getEmptyTiles_(board);
 	int nempty = empty_tiles.sub_board.size();
 
@@ -93,7 +93,7 @@ double AIPlayer :: monteCarloScore_(HexBoard &board, const HexGraph &hex_graph, 
 	return (double) nblack_wins / niter;
 }
 
-inline void AIPlayer :: insertSubBoard_(const EmptyTiles& empty_tiles, HexBoard& board) const
+inline void PureMonteCarlo:: insertSubBoard_(const EmptyTiles& empty_tiles, HexBoard& board) const
 {
 	// gather subboard into board
 	int nempty = empty_tiles.sub_board.size();
@@ -105,7 +105,7 @@ inline void AIPlayer :: insertSubBoard_(const EmptyTiles& empty_tiles, HexBoard&
 	}
 }
 
-inline std::pair<int,int> AIPlayer :: randomMove_(HexBoard& board) const
+inline std::pair<int,int> PureMonteCarlo:: randomMove_(HexBoard& board) const
 {
 	auto coord_gen = std::bind ( rng_uniform_, rng_ );
 
@@ -125,7 +125,7 @@ inline std::pair<int,int> AIPlayer :: randomMove_(HexBoard& board) const
 	return coord;
 }
 
-EmptyTiles AIPlayer :: getEmptyTiles_(const HexBoard& board) const
+EmptyTiles PureMonteCarlo:: getEmptyTiles_(const HexBoard& board) const
 {
 	// count # of empty tiles
 	int n_empty = 0;
