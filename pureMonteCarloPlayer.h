@@ -7,11 +7,6 @@
 #include "hexGraph.h"
 #include "board.h"
 
-struct EmptyTiles
-{
-    std::vector<int> coords;
-    HexBoard sub_board;
-};
 
 class PureMonteCarloPlayer : public AIPlayer
 {

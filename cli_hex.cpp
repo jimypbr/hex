@@ -80,7 +80,10 @@ inline void CLI_Hex :: printBoard_()
 {
 	auto board = game_.get_main_board();
 
-	std::cout << "   A  B  C  D  E" << std::endl;
+	std::cout << "   ";
+	for (int col = 0; col < board_side_; ++col)
+		std::cout << col+1 << "  ";
+	std::cout << std::endl;
 
 	for (int row=0; row < board_side_; ++row)
 	{
@@ -98,7 +101,9 @@ inline void CLI_Hex :: printBoard_()
 		std::cout << " " << row+1 << std::endl;
 		std::cout << std::string(row+1,' ');	// indent next row
 	}
-	std::cout << "   A  B  C  D  E" << std::endl;
+	std::cout << "    ";
+	for (int col = 0; col < board_side_; ++col)
+		std::cout << col+1 << "  ";
 	std::cout << std::endl;
 }
 

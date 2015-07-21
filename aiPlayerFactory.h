@@ -2,7 +2,7 @@
 
 #include <memory>
 #include "aiPlayer.h"
-#include "pureMonteCarlo.h"
+#include "pureMonteCarloPlayer.h"
 
 enum class AIPlayerType{RANDOM,PURE_MONTE_CARLO,MC_SEARCH_TREE};
 
@@ -14,7 +14,7 @@ public:
         switch(ptype)
         {
             case AIPlayerType::PURE_MONTE_CARLO:
-                return std::unique_ptr<AIPlayer>(new PureMonteCarlo(s));
+                return std::unique_ptr<AIPlayer>(new PureMonteCarloPlayer(s));
         }
     }
 };

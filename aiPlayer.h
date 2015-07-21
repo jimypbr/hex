@@ -6,14 +6,20 @@
 #include "hexGraph.h"
 #include "board.h"
 
+struct EmptyTiles
+{
+	std::vector<int> coords;
+	std::vector<TileColour> sub_board;
+};
+
 class AIPlayer
 {
-	protected:
-		int side_;
-		int ntiles_;
+protected:
+	int side_;
+	int ntiles_;
 
-	public:
-		AIPlayer(int s) : side_(s), ntiles_(s*s) {}
-		virtual std::pair<int,int> nextMove(HexBoard board, const HexGraph& hex_graph) const = 0;
+public:
+	AIPlayer(int s) : side_(s), ntiles_(s*s) {}
+	virtual std::pair<int,int> nextMove(HexBoard board, const HexGraph& hex_graph) const = 0;
 };
 

@@ -36,15 +36,15 @@ std::pair<int,int> PureMonteCarloPlayer:: nextMove(HexBoard board, const HexGrap
 		next_move_score[i] = monteCarloScore_(trial_board, hex_graph, niter);
 	}
 
-    // debug
-    for (int i=0; i<nempty; ++i)
-    {
-        std::cout << next_move_score[i] << ", ";
-    }
-    std::cout << std::endl;
+	// debug
+	for (int i=0; i<nempty; ++i)
+	{
+		std::cout << next_move_score[i] << ", ";
+	}
+	std::cout << std::endl;
 
 	// return coord with highest next move score
-	int addr_empty = std::distance(next_move_score.begin(), std::max_element(next_move_score.begin(), next_move_score.end()) );	
+	int addr_empty = std::distance(next_move_score.begin(), std::max_element(next_move_score.begin(), next_move_score.end()) );
 	int addr = empty_tiles.coords[addr_empty];
 	int row = addr / side_;
 	int col = addr % side_;
@@ -77,12 +77,12 @@ double PureMonteCarloPlayer:: monteCarloScore_(HexBoard &board, const HexGraph &
 
 	// perform monte carlo iterations
 	// shuffle subboard, reinsert, and evaluate winner
-	
+
 	int nblack_wins = 0;
 	for (int i=0; i<niter; ++i)
 	{
 		//std::shuffle(empty_tiles.sub_board.begin(), empty_tiles.sub_board.end(), rng_); 
-		std::shuffle(empty_tiles.sub_board.begin(), empty_tiles.sub_board.end(), std::default_random_engine()); 
+		std::shuffle(empty_tiles.sub_board.begin(), empty_tiles.sub_board.end(), std::default_random_engine());
 		insertSubBoard_(empty_tiles, board);
 		TileColour winner = hex_graph.fullBoardWinner(board);
 
@@ -129,16 +129,16 @@ EmptyTiles PureMonteCarloPlayer:: getEmptyTiles_(const HexBoard& board) const
 {
 	// count # of empty tiles
 	int n_empty = 0;
-	for (auto it : board)
+	for (int tile = 0; tile < board.ntiles(); ++tile)
 	{
-		if (it == TileColour::EMPTY)
+		if (board[tile] == TileColour::EMPTY)
 		{
 			n_empty++;
 		}
 	}
 
 	std::vector<int> coords(n_empty);
-	HexBoard sub_board(n_empty, TileColour::EMPTY);
+	std::vector<TileColour> sub_board(n_empty, TileColour::EMPTY);
 
 	// coords of emtpy tiles
 	int k=0;

@@ -2,7 +2,7 @@
 
 #include "board.h"
 #include "hexGraph.h"
-#include "pureMonteCarlo.h"
+#include "pureMonteCarloPlayer.h"
 #include "aiPlayer.h"
 #include "aiPlayerFactory.h"
 
@@ -18,7 +18,7 @@ class HexGame
 		TileColour ai_colour_;
 
 	public:
-		HexGame(int s) : side_(s), ntiles_(s*s), main_board_(s*s), \
+		HexGame(int s) : side_(s), ntiles_(s*s), main_board_(s), \
 						 hgraph_(s), user_colour_(TileColour::WHITE), \
 						 ai_colour_(TileColour::BLACK)
         {
