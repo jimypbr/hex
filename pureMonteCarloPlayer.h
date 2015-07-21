@@ -13,7 +13,7 @@ struct EmptyTiles
     HexBoard sub_board;
 };
 
-class PureMonteCarlo : public AIPlayer
+class PureMonteCarloPlayer : public AIPlayer
 {
 private:
     std::uniform_int_distribution<int> rng_uniform_;
@@ -24,10 +24,10 @@ private:
     std::pair<int,int> randomMove_(HexBoard& board) const;
 
 public:
-    PureMonteCarlo (int s) : AIPlayer(s), rng_uniform_(0,s-1)
+    PureMonteCarloPlayer(int s) : AIPlayer(s), rng_uniform_(0,s-1)
     {
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         rng_.seed(seed);
     }
-    std::pair<int,int> nextMove(HexBoard board, const HexGraph& hex_graph) const;
+    std::pair<int,int> nextMove(HexBoard board, const HexGraph& hex_graph) const override;
 };
