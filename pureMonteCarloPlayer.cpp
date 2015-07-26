@@ -33,7 +33,7 @@ std::pair<int,int> PureMonteCarloPlayer:: nextMove(HexBoard board, const HexGrap
 		int trial_move = empty_tiles.coords[i];
 		HexBoard trial_board = board;
 		trial_board[trial_move] = TileColour::BLACK;
-		next_move_score[i] = monteCarloScore_(trial_board, hex_graph, niter);
+		next_move_score[i] = simulatePlay_(trial_board, hex_graph, niter);
 	}
 
 	// debug
@@ -46,8 +46,8 @@ std::pair<int,int> PureMonteCarloPlayer:: nextMove(HexBoard board, const HexGrap
 	// return coord with highest next move score
 	int addr_empty = std::distance(next_move_score.begin(), std::max_element(next_move_score.begin(), next_move_score.end()) );
 	int addr = empty_tiles.coords[addr_empty];
-	int row = addr / side_;
-	int col = addr % side_;
+	int row = addr / board.side();
+	int col = addr % board.side();
 
 	std::pair<int, int> next_move_coord(row, col);
 
@@ -58,7 +58,7 @@ std::pair<int,int> PureMonteCarloPlayer:: nextMove(HexBoard board, const HexGrap
  * Given a partially filled hex board, return the win/lose ratio for the aiplayer after niter number
  * of monteCarlo trials, which randomly fill the rest of the baord and then calculates who won.
  */
-double PureMonteCarloPlayer:: monteCarloScore_(HexBoard &board, const HexGraph &hex_graph, const int niter) const {
+double PureMonteCarloPlayer:: simulatePlay_(HexBoard &board, const HexGraph &hex_graph, const int niter) const {
 	EmptyTiles empty_tiles = getEmptyTiles_(board);
 	int nempty = empty_tiles.sub_board.size();
 
@@ -107,15 +107,16 @@ inline void PureMonteCarloPlayer:: insertSubBoard_(const EmptyTiles& empty_tiles
 
 inline std::pair<int,int> PureMonteCarloPlayer:: randomMove_(HexBoard& board) const
 {
-	auto coord_gen = std::bind ( rng_uniform_, rng_ );
+	std::uniform_int_distribution<int> rng_uniform(0,board.side()-1);
+	auto random_coord = std::bind ( rng_uniform, rng_ );
 
 	int row, col;
 	for (;;)
 	{
-		row = coord_gen();
-		col = coord_gen();
+		row = random_coord();
+		col = random_coord();
 
-		if (board[row*side_ + col] == TileColour::EMPTY)
+		if (board[row*board.side() + col] == TileColour::EMPTY)
 		{
 			break;
 		}
@@ -141,12 +142,13 @@ EmptyTiles PureMonteCarloPlayer:: getEmptyTiles_(const HexBoard& board) const
 	std::vector<TileColour> sub_board(n_empty, TileColour::EMPTY);
 
 	// coords of emtpy tiles
+	int side = board.side();
 	int k=0;
-	for (int i=0; i<side_; i++)
+	for (int i=0; i<side; i++)
 	{
-		for (int j=0; j<side_; j++)
+		for (int j=0; j<side; j++)
 		{
-			const int addr = i*side_+j;
+			const int addr = i*side+j;
 			if (board[addr] == TileColour::EMPTY)
 			{
 				coords[k] = addr;

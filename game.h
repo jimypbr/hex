@@ -19,10 +19,10 @@ class HexGame
 
 	public:
 		HexGame(int s) : side_(s), ntiles_(s*s), main_board_(s), \
-						 hgraph_(s), user_colour_(TileColour::WHITE), \
+						 hgraph_(), user_colour_(TileColour::WHITE), \
 						 ai_colour_(TileColour::BLACK)
         {
-            ai_ = AIPlayerFactory::create(AIPlayerType::PURE_MONTE_CARLO, s);
+            ai_ = AIPlayerFactory::create(AIPlayerType::PURE_MONTE_CARLO);
         }
 		
 		bool move(int x, int y);
