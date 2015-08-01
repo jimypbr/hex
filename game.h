@@ -2,7 +2,6 @@
 
 #include "board.h"
 #include "hexGraph.h"
-//#include "pureMonteCarloPlayer.h"
 #include "aiPlayer.h"
 #include "aiPlayerFactory.h"
 

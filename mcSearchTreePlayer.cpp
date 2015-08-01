@@ -12,7 +12,7 @@ static std::mt19937 rng(seed);
 
 std::pair<int, int> MCSearchTreePlayer::nextMove(HexBoard board, const HexGraph &hex_graph) const
 {
-    const int Niter = 5000;
+    const int Niter = 10000;
 
     auto root = std::unique_ptr<MCNode>(new MCNode(board, TileColour::WHITE));
 
@@ -49,28 +49,48 @@ std::pair<int, int> MCSearchTreePlayer::nextMove(HexBoard board, const HexGraph 
         visited.push_back(newNode);
         TileColour winner = trialGame_(newNode, hex_graph);
 
-        for (auto node : visited)
-            (*node).updateStats(winner);
+        for (const auto & node : visited)
+            node->updateStats(winner);
     }
 
     // Select the node that gave the best score
-    MCNode* best_node = select_(root.get());
+    MCNode* best_node = bestMove_(root.get());
 
-    // Free the tree memory
-    /*
-    for (auto c : root->children)
+    /* debug
+    for (const auto& c : root->children)
     {
-        std::cout << c->move << ", ";
+        int move = c->move;
+        std::cout << "(" << move / board.side()+1 << ", " << move % board.side()+1 << ") -- ";
         std::cout << c->nBlackWins << ", ";
         std::cout << c->nWhiteWins << ", ";
         std::cout << c->nVisits << ", ";
-        std::cout << c->nEmpty << std::endl;
+        std::cout << c->nBlackWins /  (double) (c->nVisits) << std::endl;
     }
      */
 
     // Return that node's move
     int move = best_node->move;
     return std::pair<int, int>(move / board.side(), move % board.side());
+}
+
+MCNode* MCSearchTreePlayer :: bestMove_(MCNode* node) const
+{
+    double best_score = -1;
+    MCNode* best_node = nullptr;
+    int total_visits = 0;
+    for (const auto& c : node->children)
+    {
+        double score = c->nBlackWins / (double) c->nVisits;
+        total_visits += c->nVisits;
+
+        if (score > best_score)
+        {
+            best_score = score;
+            best_node = c.get();
+        }
+    }
+    //std::cout << "Total visits = " << total_visits << std::endl;
+    return best_node;
 }
 
 MCNode* MCSearchTreePlayer::select_(MCNode* node) const
@@ -130,7 +150,7 @@ MCNode* MCSearchTreePlayer::expand_(MCNode* node) const
 
 TileColour MCSearchTreePlayer::trialGame_(MCNode* node, const HexGraph & hex_graph) const
 {
-    EmptyTiles empty_tiles = getEmptyTiles_((*node).game);
+    EmptyTiles empty_tiles = getEmptyTiles_(node->game);
     int nempty = empty_tiles.sub_board.size();
     HexBoard board = node->game;
 
@@ -163,8 +183,8 @@ TileColour MCSearchTreePlayer::trialGame_(MCNode* node, const HexGraph & hex_gra
         std::cout << "white win" << std::endl;
     if (winner == TileColour::EMPTY)
         std::cout << "wat" << std::endl;
-*/
-    return winner;
+    */
+     return winner;
 }
 
 

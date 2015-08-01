@@ -23,6 +23,7 @@ private:
     EmptyTiles getEmptyTiles_(const HexBoard& board) const;
     MCNode* select_(MCNode* node) const;
     MCNode* expand_(MCNode* node) const;
+    MCNode* bestMove_(MCNode* node) const;
     TileColour trialGame_(MCNode* node, const HexGraph & hex_graph) const;
 
 public:
