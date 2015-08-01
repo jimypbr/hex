@@ -3,9 +3,8 @@
 Hex written in C++(11). Uses Pure Monte Carlo AI. Currently just has a CLI UI.
 
 ## TODO
-
-* Refactor the HexBoard data type to be a real class/struct with overloaded []. This removes the need for other objects to know the HexBoard's size independently of the HexBoard object.
 * Add *documentation*!
-* Implement Monte Carlo Tree Search.
+* Generalise the player part of the game class so you can have human vs human, ai vs ai, etc.
 * Implement parallel pure monte carlo
 * Implement parallel MCTS
+
