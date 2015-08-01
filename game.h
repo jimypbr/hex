@@ -2,7 +2,7 @@
 
 #include "board.h"
 #include "hexGraph.h"
-#include "pureMonteCarloPlayer.h"
+//#include "pureMonteCarloPlayer.h"
 #include "aiPlayer.h"
 #include "aiPlayerFactory.h"
 
@@ -23,6 +23,7 @@ class HexGame
 						 ai_colour_(TileColour::BLACK)
         {
             ai_ = AIPlayerFactory::create(AIPlayerType::PURE_MONTE_CARLO);
+			//ai_ = AIPlayerFactory::create(AIPlayerType::MC_SEARCH_TREE);
         }
 		
 		bool move(int x, int y);
