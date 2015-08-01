@@ -36,9 +36,9 @@ void HexGame :: aiMove()
 bool HexGame :: isFinished() const
 {
 	bool whiteWon = hgraph_.whiteWon(main_board_);
-    std::cout << "whiteWon = " << whiteWon << std::endl;
+    //std::cout << "whiteWon = " << whiteWon << std::endl;
 	bool blackWon = hgraph_.blackWon(main_board_);
-    std::cout << "blackWon = " << blackWon << std::endl;
+    //std::cout << "blackWon = " << blackWon << std::endl;
 	return (whiteWon || blackWon);
 }
 

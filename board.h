@@ -13,11 +13,6 @@ class HexBoard
 {
 private:
     /*
-     * Board represented as a flattened 2d vector of TileColours
-     */
-    std::vector<TileColour> board_;
-
-    /*
      * The number of tiles on the side of the board
      */
     int side_;
@@ -26,6 +21,11 @@ private:
      * Total number of tiles: side*side
      */
     int ntiles_;
+
+    /*
+     * Board represented as a flattened 2d vector of TileColours
+     */
+    std::vector<TileColour> board_;
 
 public:
     HexBoard(int s): side_(s), ntiles_(s*s), board_(s*s, TileColour::EMPTY) {}
