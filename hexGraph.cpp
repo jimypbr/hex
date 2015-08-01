@@ -1,118 +1,204 @@
 
 #include <vector>
+#include <queue>
 #include <iostream>
 #include "hexGraph.h"
 #include "board.h"
 
-bool HexGraph :: whiteWon(const HexBoard& board) const
+static inline int coord2index(int row, int col, int side)
 {
-	int board_side = board.side();
-	std::vector<bool> prev_open(board_side);
-	std::vector<bool> curr_open(board_side);
-
-	// do first row separately
-	for (int col=0; col < board_side; ++col)
-	{
-		prev_open[col] = (board[col] == TileColour::WHITE);
-	}
-
-	// remaining rows
-	for (int row=1; row < board_side; ++row)
-	{
-		for (int col=0; col < board_side-1; ++col)
-		{
-			// open if current node is white and one of its preceding 
-			// nodes are also white
-			bool is_open = ( board[row*board_side + col] == TileColour::WHITE ) && \
-						   ( prev_open[col] || prev_open[col+1] );
-			curr_open[col] = is_open;
-		}
-
-		// handle end case separately
-		bool is_open = ( board[row*board_side + board_side-1] == TileColour::WHITE ) && \
-					   ( prev_open[board_side-1] );
-		curr_open[board_side-1] = is_open;
-
-		// check for left->right connection on this row
-		for (int col=1; col < board_side; ++col)
-		{
-			if ( (curr_open[col-1] == true) && !(curr_open[col]) )
-				if ( board[row*board_side + col] == TileColour::WHITE)
-					curr_open[col] = true;
-		}
-
-		if (row != (board_side-1))
-			std::swap(prev_open, curr_open);
-	}
-
-	bool is_winner = false;
-	for (int i=0; i < board_side; ++i)
-	{
-		if (curr_open[i] == true)
-		{
-			is_winner = true;
-			break;
-		}
-	}
-
-	return is_winner;
+	return row*side + col;
 }
 
-bool HexGraph :: blackWon(const HexBoard& board) const
+std::vector<int> HexGraph :: neighbourNodes_(int t, int side) const
 {
-	int board_side = board.side();
-	std::vector<bool> prev_open(board_side);
-	std::vector<bool> curr_open(board_side);
+	int ntiles = side*side;
+	std::vector<int> neighbours;
 
-	// do first col separately
-	for (int row=0; row < board_side; ++row)
+	// virtual nodes
+	if (t == ntiles)
 	{
-		prev_open[row] = (board[row*board_side] == TileColour::BLACK);
+		//north
+		for (int i = 0; i < side; ++i)
+			neighbours.push_back(i);
 	}
-
-	// remaining rows
-	for (int col=1; col < board_side; ++col)
+	else if (t == ntiles+1)
 	{
-		for (int row=0; row < board_side-1; ++row)
+		//south
+		for (int i = ntiles-side-1; i < ntiles; ++i)
+			neighbours.push_back(i);
+	}
+	else if (t == ntiles+2)
+	{
+		// west
+		for (int i = 0; i < side*side; i+=side)
+			neighbours.push_back(i);
+	}
+	else if (t == ntiles+3)
+	{
+		// east
+		for (int i = side-1; i < side*side; i+=side)
+			neighbours.push_back(i);
+	}
+	else
+	{
+		// real nodes
+
+		// 2d coordinates
+		int row = t / side;
+		int col = t % side;
+
+		if (row == 0)
 		{
-			// open if current node is white and one of its preceding 
-			// nodes are also white
-			bool is_open = ( board[row*board_side + col] == TileColour::BLACK ) && \
-						   ( prev_open[row] || prev_open[row+1] );
-			curr_open[row] = is_open;
+			neighbours.push_back(ntiles);
+			neighbours.push_back(coord2index(row+1,col,side));
+		}
+		else if (row == (side-1))
+		{
+			neighbours.push_back(ntiles + 1);
+			neighbours.push_back(coord2index(row-1,col,side));
+		}
+		else
+		{
+			neighbours.push_back(coord2index(row+1,col,side));
+			neighbours.push_back(coord2index(row-1,col,side));
 		}
 
-		// handle end case separately
-		bool is_open = ( board[board_side*board_side-1] == TileColour::BLACK ) && \
-					   ( prev_open[board_side-1] );
-		curr_open[board_side-1] = is_open;
-
-		// check for up->down connection on this column
-		for (int row=1; row < board_side; ++row)
+		if (col == 0)
 		{
-			if ( (curr_open[row-1] == true) && !(curr_open[row]) )
-				if ( board[row*board_side + col] == TileColour::BLACK)
-					curr_open[row] = true;
+			neighbours.push_back(ntiles+2);
+			neighbours.push_back(coord2index(row,col+1,side));
+
+			if (row > 0)
+				neighbours.push_back(coord2index(row-1,col+1,side));
 		}
-
-		if (col != (board_side-1))
-			std::swap(prev_open, curr_open);
-	}
-
-	bool is_winner = false;
-	for (int i=0; i < board_side; ++i)
-	{
-		if (curr_open[i] == true)
+		else if (col == (side-1))
 		{
-			is_winner = true;
-			break;
+			neighbours.push_back(ntiles + 3);
+			neighbours.push_back(coord2index(row,col-1,side));
+
+			if (row < (side-1))
+				neighbours.push_back(coord2index(row+1,col-1,side));
+		}
+		else
+		{
+			neighbours.push_back(coord2index(row,col+1,side));
+			neighbours.push_back(coord2index(row,col-1,side));
+
+			if (row > 0)
+				neighbours.push_back(coord2index(row-1,col+1,side));
+			if (row < (side-1))
+				neighbours.push_back(coord2index(row+1,col-1,side));
+
 		}
 	}
-
-	return is_winner;
+	return neighbours;
 }
 
-TileColour HexGraph :: fullBoardWinner(const HexBoard& board) const
+bool HexGraph :: whiteWon(const HexBoard & board) const
+{
+	/*
+	 * The board is represented as a graph where the tiles are vertices and
+	 * there is an edge between a tile and its neighbours.
+	 * 4 virtual nodes are included on the NORTH, SOUTH, EAST, and WEST
+	 * of the board. NORTH and SOUTH are always WHITE, while EAST and WEST
+	 * are always BLACK.
+	 * A path connecting NORTH->SOUTH => white win
+	 * A path connecting EAST->WEST => black win
+	 */
+	int ntiles = board.ntiles();
+	std::vector<bool> visited(ntiles+4, false);
+	std::queue<int> q;
+
+	int north = ntiles;
+	int south = ntiles + 1;
+	visited[north] = true;
+	q.push(north);
+
+	while (!q.empty())
+	{
+		int s = q.front();
+		q.pop();
+
+		std::vector<int> neighbours = neighbourNodes_(s, board.side());
+		for (auto n : neighbours)
+		{
+			bool connected;
+			if (n < ntiles)
+				connected = (board[n] == TileColour::WHITE);
+			else
+				connected = (n == north) || (n == south);
+			if (connected)
+			{
+				if (!visited[n])
+				{
+					visited[n] = true;
+					q.push(n);
+				}
+			}
+		}
+	}
+
+	// if south node is visited then white wins
+	//for (auto n : visited)
+	//	std::cout << n << ", ";
+	//std::cout << std::endl;
+
+	return visited[south];
+}
+
+bool HexGraph :: blackWon(const HexBoard & board) const
+{
+	/*
+	 * The board is represented as a graph where the tiles are vertices and
+	 * there is an edge between a tile and its neighbours.
+	 * 4 virtual nodes are included on the NORTH, SOUTH, EAST, and WEST
+	 * of the board. NORTH and SOUTH are always WHITE, while EAST and WEST
+	 * are always BLACK.
+	 * A path connecting NORTH->SOUTH => white win
+	 * A path connecting WEST->EAST => black win
+	 */
+	int ntiles = board.ntiles();
+	std::vector<bool> visited(ntiles+4, false);
+	std::queue<int> q;
+
+	int west = ntiles + 2;
+	int east = ntiles + 3;
+	visited[west] = true;
+	q.push(west);
+
+	while (!q.empty())
+	{
+		int s = q.front();
+		q.pop();
+
+		std::vector<int> neighbours = neighbourNodes_(s, board.side());
+		for (auto n : neighbours)
+		{
+			bool connected;
+			if (n < ntiles)
+				connected = (board[n] == TileColour::BLACK);
+			else
+				connected = (n == west) || (n == east);
+			if (connected)
+			{
+				if (!visited[n])
+				{
+					visited[n] = true;
+					q.push(n);
+				}
+			}
+		}
+	}
+
+	// if east node is visited then black wins
+	//for (auto n : visited)
+	//	std::cout << n << ", ";
+	//std::cout << std::endl;
+	return visited[east];
+}
+
+TileColour HexGraph :: fullBoardWinner(const HexBoard & board) const
 {
 	// for special case of a full board only need to evaluate if one of the players won 
 	// since they can only have opposite values
