@@ -10,7 +10,7 @@ static inline int coord2index(int row, int col, int side)
 	return row*side + col;
 }
 
-std::vector<int> HexGraph :: neighbourNodes_(int t, int side) const
+std::vector<int> HexGraph ::neighbourNodes(int t, int side)
 {
 	int ntiles = side*side;
 	std::vector<int> neighbours;
@@ -95,7 +95,7 @@ std::vector<int> HexGraph :: neighbourNodes_(int t, int side) const
 	return neighbours;
 }
 
-bool HexGraph :: whiteWon(const HexBoard & board) const
+bool HexGraph :: whiteWon(const HexBoard & board)
 {
 	/*
 	 * The board is represented as a graph where the tiles are vertices and
@@ -120,7 +120,7 @@ bool HexGraph :: whiteWon(const HexBoard & board) const
 		int s = q.front();
 		q.pop();
 
-		std::vector<int> neighbours = neighbourNodes_(s, board.side());
+		std::vector<int> neighbours = neighbourNodes(s, board.side());
 		for (auto n : neighbours)
 		{
 			bool connected;
@@ -147,7 +147,7 @@ bool HexGraph :: whiteWon(const HexBoard & board) const
 	return visited[south];
 }
 
-bool HexGraph :: blackWon(const HexBoard & board) const
+bool HexGraph :: blackWon(const HexBoard & board)
 {
 	/*
 	 * The board is represented as a graph where the tiles are vertices and
@@ -172,7 +172,7 @@ bool HexGraph :: blackWon(const HexBoard & board) const
 		int s = q.front();
 		q.pop();
 
-		std::vector<int> neighbours = neighbourNodes_(s, board.side());
+		std::vector<int> neighbours = neighbourNodes(s, board.side());
 		for (auto n : neighbours)
 		{
 			bool connected;
@@ -198,7 +198,7 @@ bool HexGraph :: blackWon(const HexBoard & board) const
 	return visited[east];
 }
 
-TileColour HexGraph :: fullBoardWinner(const HexBoard & board) const
+TileColour HexGraph :: fullBoardWinner(const HexBoard & board)
 {
 	// for special case of a full board only need to evaluate if one of the players won 
 	// since they can only have opposite values

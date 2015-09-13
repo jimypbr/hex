@@ -29,24 +29,24 @@ bool HexGame :: move(int x, int y)
 
 void HexGame :: aiMove()
 {
-	std::pair<int,int> coord = ai_->nextMove(main_board_, hgraph_);
+	std::pair<int,int> coord = ai_->nextMove(main_board_);
 	main_board_[coord.first * side_ + coord.second] = TileColour::BLACK;
 }
 
 bool HexGame :: isFinished() const
 {
-	bool whiteWon = hgraph_.whiteWon(main_board_);
+	bool whiteWon = HexGraph::whiteWon(main_board_);
     //std::cout << "whiteWon = " << whiteWon << std::endl;
-	bool blackWon = hgraph_.blackWon(main_board_);
+	bool blackWon = HexGraph::blackWon(main_board_);
     //std::cout << "blackWon = " << blackWon << std::endl;
 	return (whiteWon || blackWon);
 }
 
 TileColour HexGame :: winner() const
 {
-	if ( hgraph_.whiteWon(main_board_) )
+	if ( HexGraph::whiteWon(main_board_) )
 		return TileColour::WHITE;
-	else if ( hgraph_.blackWon(main_board_) )
+	else if ( HexGraph::blackWon(main_board_) )
 		return TileColour::BLACK;
 	else 
 		return TileColour::EMPTY;

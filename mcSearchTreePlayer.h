@@ -24,7 +24,7 @@ private:
     MCNode* select_(MCNode* node) const;
     MCNode* expand_(MCNode* node) const;
     MCNode* bestMove_(MCNode* node) const;
-    TileColour trialGame_(MCNode* node, const HexGraph & hex_graph) const;
+    TileColour trialGame_(MCNode* node) const;
 
 public:
     MCSearchTreePlayer() : AIPlayer(), rng_double_(0,1)
@@ -33,6 +33,6 @@ public:
         rng_.seed(seed);
     }
 
-    std::pair<int, int> nextMove(HexBoard board, const HexGraph &hex_graph) const override;
+    std::pair<int, int> nextMove(HexBoard board) const override;
 };
 

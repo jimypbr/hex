@@ -10,7 +10,7 @@ static void printBoard_(HexBoard & board);
 static unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 static std::mt19937 rng(seed);
 
-std::pair<int, int> MCSearchTreePlayer::nextMove(HexBoard board, const HexGraph &hex_graph) const
+std::pair<int, int> MCSearchTreePlayer::nextMove(HexBoard board) const
 {
     const int Niter = 10000;
 
@@ -47,9 +47,10 @@ std::pair<int, int> MCSearchTreePlayer::nextMove(HexBoard board, const HexGraph 
 
         MCNode* newNode = select_(cur);
         visited.push_back(newNode);
-        TileColour winner = trialGame_(newNode, hex_graph);
 
-        for (const auto & node : visited)
+        TileColour winner = trialGame_(newNode);
+
+        for (const auto &node : visited)
             node->updateStats(winner);
     }
 
@@ -100,7 +101,7 @@ MCNode* MCSearchTreePlayer::select_(MCNode* node) const
 
     // use rng to break ties
     std::uniform_real_distribution<double> uniform_double(0,1);
-    auto ran = std::bind(uniform_double, rng_);
+    auto ran = std::bind(uniform_double, rng);
 
     // select node child with best uctValue. Use small random number
     // to break ties.
@@ -148,7 +149,7 @@ MCNode* MCSearchTreePlayer::expand_(MCNode* node) const
     return cptr;
 }
 
-TileColour MCSearchTreePlayer::trialGame_(MCNode* node, const HexGraph & hex_graph) const
+TileColour MCSearchTreePlayer::trialGame_(MCNode* node) const
 {
     EmptyTiles empty_tiles = getEmptyTiles_(node->game);
     int nempty = empty_tiles.sub_board.size();
@@ -174,7 +175,7 @@ TileColour MCSearchTreePlayer::trialGame_(MCNode* node, const HexGraph & hex_gra
 
     //printBoard_(board);
 
-    TileColour winner = hex_graph.fullBoardWinner(board);
+    TileColour winner = HexGraph::fullBoardWinner(board);
 
     /*
     if (winner == TileColour::BLACK)

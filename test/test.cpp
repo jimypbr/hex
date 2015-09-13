@@ -7,8 +7,8 @@
 #include "../board.h"
 
 static void printBoard_(const HexBoard & board);
-static void test_white_win(const HexBoard & board, const HexGraph & hg);
-static void test_black_win(const HexBoard & board, const HexGraph & hg);
+static void test_white_win(const HexBoard & board);
+static void test_black_win(const HexBoard & board);
 static int test_number = 0;
 
 int main()
@@ -16,7 +16,6 @@ int main()
     std::cout << "LOLOL" << std::endl;
 
     HexBoard board(5);
-    HexGraph hg;
 
     /* Test board configuration.
             1  2  3  4  5
@@ -47,7 +46,7 @@ int main()
     board[17] = TileColour::BLACK;
     board[19] = TileColour::BLACK;
 
-    test_black_win(board, hg);
+    test_black_win(board);
 
     // fill board up
     board = HexBoard(5);
@@ -62,7 +61,7 @@ int main()
     board[18] = TileColour::BLACK;
     board[19] = TileColour::BLACK;
 
-    test_black_win(board, hg);
+    test_black_win(board);
 
     // fill board up
     board = HexBoard(5);
@@ -73,7 +72,7 @@ int main()
     board[i*5+3] = TileColour::BLACK;
     board[i*5+4] = TileColour::BLACK;
 
-    test_black_win(board, hg);
+    test_black_win(board);
 
     // fill board up
     board = HexBoard(5);
@@ -89,7 +88,7 @@ int main()
     board[22] = TileColour::BLACK;
     board[22] = TileColour::BLACK;
 
-    test_black_win(board, hg);
+    test_black_win(board);
 
     // fill board up
     board = HexBoard(5);
@@ -105,17 +104,17 @@ int main()
     board[15] = TileColour::WHITE;
     board[20] = TileColour::WHITE;
 
-    test_white_win(board, hg);
+    test_white_win(board);
     return 0;
 }
 
-static void test_black_win(const HexBoard & board, const HexGraph & hg)
+static void test_black_win(const HexBoard & board)
 {
     printBoard_(board);
 
-    bool whiteWon = hg.whiteWon(board);
-    bool blackWon = hg.blackWon(board);
-    TileColour winner = hg.fullBoardWinner(board);
+    bool whiteWon = HexGraph::whiteWon(board);
+    bool blackWon = HexGraph::blackWon(board);
+    TileColour winner = HexGraph::fullBoardWinner(board);
 
     std::cout << "Test " << test_number++ << std::endl;
     std::cout << (whiteWon == false) << std::endl;
@@ -124,13 +123,13 @@ static void test_black_win(const HexBoard & board, const HexGraph & hg)
     std::cout << std::endl;
 }
 
-static void test_white_win(const HexBoard & board, const HexGraph & hg)
+static void test_white_win(const HexBoard & board)
 {
     printBoard_(board);
 
-    bool whiteWon = hg.whiteWon(board);
-    bool blackWon = hg.blackWon(board);
-    TileColour winner = hg.fullBoardWinner(board);
+    bool whiteWon = HexGraph::whiteWon(board);
+    bool blackWon = HexGraph::blackWon(board);
+    TileColour winner = HexGraph::fullBoardWinner(board);
 
     std::cout << "Test " << test_number++ << std::endl;
     std::cout << (whiteWon == true) << std::endl;
