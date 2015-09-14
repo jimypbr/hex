@@ -5,8 +5,10 @@
 #include "board.h"
 
 
-/// Node in Monte Carlo search tree that represents
-/// a possible board configuration
+/**
+ * Node in Monte Carlo search tree that represents
+ * a possible board configuration.
+*/
 struct MCNode
 {
     int nWhiteWins = 0;
@@ -15,23 +17,25 @@ struct MCNode
     int nEmpty;
     int move;
 
-    TileColour colour;
     HexBoard game;
+    TileColour colour;
 
-    //MCNode* parent = nullptr;
     std::vector<std::unique_ptr<MCNode>> children;
 
     MCNode(HexBoard game, TileColour col) : game(game), colour(col)
-    {
-       // nActions = std::count(game.start(), game.end(), TileColour::EMPTY);
-    }
+    {}
 
-    /// return true if node is leaf; else false
+    /**
+     * return true if node is leaf; else false
+     */
     bool isLeaf()
     {
         return children.size() == 0;
     }
 
+    /**
+     * Update the stats of this node given a winning colour of a game
+     */
     void updateStats(TileColour winner)
     {
         nVisits += 1;
@@ -42,7 +46,4 @@ struct MCNode
             nBlackWins += 1;
     }
 };
-
-/// shorthand type for smart pointer to MCNode
-//typedef std::unique_ptr<MCNode> MCNodePtr;
 

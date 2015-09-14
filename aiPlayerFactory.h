@@ -5,7 +5,7 @@
 #include "pureMonteCarloPlayer.h"
 #include "mcSearchTreePlayer.h"
 
-enum class AIPlayerType{RANDOM,PURE_MONTE_CARLO,MC_SEARCH_TREE};
+enum class AIPlayerType{PURE_MONTE_CARLO,MC_SEARCH_TREE};
 
 class AIPlayerFactory
 {

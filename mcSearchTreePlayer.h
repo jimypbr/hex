@@ -9,6 +9,10 @@
 #include "mcNode.h"
 
 
+/**
+ * AI Hex player that uses the Monte Carlo Tree Search algorithm (see mcts.ai).
+ * The MCTS uses the Upper Confidence Bound for Trees (UCT) method.
+ */
 class MCSearchTreePlayer : public AIPlayer
 {
 private:
@@ -27,7 +31,7 @@ private:
     TileColour trialGame_(MCNode* node) const;
 
 public:
-    MCSearchTreePlayer() : AIPlayer(), rng_double_(0,1)
+    MCSearchTreePlayer() : rng_double_(0,1)
     {
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         rng_.seed(seed);

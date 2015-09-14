@@ -8,6 +8,9 @@
 #include "board.h"
 
 
+/**
+ * AI Hex player that uses a pure Monte Carlo algorithm.
+ */
 class PureMonteCarloPlayer : public AIPlayer
 {
 private:
@@ -18,7 +21,7 @@ private:
     std::pair<int,int> randomMove_(HexBoard& board) const;
 
 public:
-    PureMonteCarloPlayer() : AIPlayer()
+    PureMonteCarloPlayer()
     {
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         rng_.seed(seed);

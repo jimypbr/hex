@@ -2,6 +2,9 @@
 
 #include "game.h"
 
+/**
+ * CLI interface to the Hex game.
+ */
 class CLI_Hex
 {
 	private:
