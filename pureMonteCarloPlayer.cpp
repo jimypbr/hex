@@ -28,7 +28,7 @@ std::pair<int,int> PureMonteCarloPlayer:: nextMove(HexBoard board) const
 	{
 		int trial_move = empty_sub_board.coords[i];
 		HexBoard trial_board = board;
-		trial_board[trial_move] = TileColour::BLACK;
+		trial_board[trial_move] = ai_colour_;
 		next_move_score[i] = simulatePlay_(trial_board, niter);
 	}
 
@@ -68,18 +68,18 @@ double PureMonteCarloPlayer:: simulatePlay_(HexBoard &board, const int niter) co
 	// perform monte carlo iterations
 	// shuffle subboard, reinsert, and evaluate winner
 
-	int nblack_wins = 0;
+	int nAI_wins = 0;
 	for (int i=0; i<niter; ++i)
 	{
 		std::shuffle(sub_board.colours.begin(), sub_board.colours.end(), rng);
 		insertSubHexBoard(sub_board, board);
 		TileColour winner = HexGraph::fullBoardWinner(board);
 
-		if (winner == TileColour::BLACK)
-			nblack_wins++;
+		if (winner == ai_colour_)
+			nAI_wins++;
 	}
 
-	return (double) nblack_wins / (double) niter;
+	return (double) nAI_wins / (double) niter;
 }
 
 inline std::pair<int,int> PureMonteCarloPlayer:: randomMove_(HexBoard& board) const

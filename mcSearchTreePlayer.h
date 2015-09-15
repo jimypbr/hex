@@ -3,6 +3,8 @@
 #include <utility>
 #include <random>
 #include <chrono>
+#include <memory>
+#include <vector>
 #include "hexGraph.h"
 #include "board.h"
 #include "aiplayer.h"
@@ -16,9 +18,12 @@
 class MCSearchTreePlayer : public AIPlayer
 {
 private:
-
     const double EPSILON_ = 1e-6;
 
+    /**
+     * This AIPlayers colour.
+     * */
+    TileColour ai_colour_;
     std::uniform_real_distribution<double> rng_double_;
     std::default_random_engine rng_;
 
@@ -28,7 +33,12 @@ private:
     TileColour trialGame_(MCNode* node) const;
 
 public:
-    MCSearchTreePlayer() : rng_double_(0,1)
+    MCSearchTreePlayer() : ai_colour_(TileColour::BLACK), rng_double_(0,1)
+    {
+        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        rng_.seed(seed);
+    }
+    MCSearchTreePlayer(TileColour c) : ai_colour_(c), rng_double_(0,1)
     {
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         rng_.seed(seed);

@@ -1,11 +1,14 @@
 
 #include <iostream>
 #include <vector>
+#include <memory>
+#include <algorithm>
 #include "mcSearchTreePlayer.h"
 #include "board.h"
 #include "subBoard.h"
 #include "cli_hex.h"
 #include "mcNode.h"
+
 
 static void printBoard_(HexBoard & board);
 static unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -13,7 +16,7 @@ static std::mt19937 rng(seed);
 
 std::pair<int, int> MCSearchTreePlayer::nextMove(HexBoard board) const
 {
-    const int Niter = 10000;
+    const int Niter = 1000;
 
     auto root = std::unique_ptr<MCNode>(new MCNode(board, TileColour::WHITE));
 
@@ -49,26 +52,17 @@ std::pair<int, int> MCSearchTreePlayer::nextMove(HexBoard board) const
         MCNode* newNode = select_(cur);
         visited.push_back(newNode);
 
-        TileColour winner = trialGame_(newNode);
+        for (int i = 0; i < 16; ++i)
+        {
+            TileColour winner = trialGame_(newNode);
 
-        for (const auto &node : visited)
-            node->updateStats(winner);
+            for (const auto &node : visited)
+                node->updateStats(winner);
+        }
     }
 
     // Select the node that gave the best score
     MCNode* best_node = bestMove_(root.get());
-
-    /* debug
-    for (const auto& c : root->children)
-    {
-        int move = c->move;
-        std::cout << "(" << move / board.side()+1 << ", " << move % board.side()+1 << ") -- ";
-        std::cout << c->nBlackWins << ", ";
-        std::cout << c->nWhiteWins << ", ";
-        std::cout << c->nVisits << ", ";
-        std::cout << c->nBlackWins /  (double) (c->nVisits) << std::endl;
-    }
-     */
 
     // Return that node's move
     int move = best_node->move;
@@ -82,7 +76,12 @@ MCNode* MCSearchTreePlayer :: bestMove_(MCNode* node) const
     int total_visits = 0;
     for (const auto& c : node->children)
     {
-        double score = c->nBlackWins / (double) c->nVisits;
+        double score;
+        if (node->colour == TileColour::WHITE)
+            score = c->nBlackWins / (double) c->nVisits;
+        else
+            score = c->nWhiteWins / (double) c->nVisits;
+
         total_visits += c->nVisits;
 
         if (score > best_score)
@@ -109,7 +108,14 @@ MCNode* MCSearchTreePlayer::select_(MCNode* node) const
     for (auto const& cptr : node->children )
     {
         auto c = cptr.get();
-        double uctValue = c->nBlackWins / (c->nVisits + EPSILON_) + \
+
+        int nAIWins;
+        if (ai_colour_ == TileColour::BLACK)
+            nAIWins = c->nBlackWins;
+        else
+            nAIWins = c->nWhiteWins;
+
+        double uctValue = nAIWins / (c->nVisits + EPSILON_) + \
                         sqrt( log( node->nVisits+1) / (c->nVisits + EPSILON_)) + ran()*EPSILON_ ;
         if (uctValue > bestValue)
         {
@@ -122,11 +128,10 @@ MCNode* MCSearchTreePlayer::select_(MCNode* node) const
 
 MCNode* MCSearchTreePlayer::expand_(MCNode* node) const
 {
-    //EmptyTiles next_moves = getEmptyTiles_(node->game);
     SubHexBoard next_moves = getEmptySubHexBoard(node->game);
-
     const int n = next_moves.coords.size();
-    TileColour child_colour = node->colour == TileColour::WHITE ? TileColour::BLACK : TileColour::WHITE;
+    TileColour child_colour = oppositeColour(node->colour);
+
     for (int i = 0; i < n; ++i)
     {
         node->children.push_back( std::unique_ptr<MCNode>(new MCNode( node->game, child_colour ) ));
