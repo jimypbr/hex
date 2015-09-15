@@ -7,18 +7,6 @@
 #include "board.h"
 
 /**
- * Sparse representation of the empty tiles on a HexBoard.
- */
-struct EmptyTiles
-{
-    // 1d coordinates of the empty tiles
-	std::vector<int> coords;
-
-    // tile colours of the sub_board
-	std::vector<TileColour> sub_board;
-};
-
-/**
  * Abstract class for AI Hex player.
  */
 class AIPlayer

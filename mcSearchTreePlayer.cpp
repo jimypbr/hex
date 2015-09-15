@@ -3,6 +3,7 @@
 #include <vector>
 #include "mcSearchTreePlayer.h"
 #include "board.h"
+#include "subBoard.h"
 #include "cli_hex.h"
 #include "mcNode.h"
 
@@ -121,12 +122,12 @@ MCNode* MCSearchTreePlayer::select_(MCNode* node) const
 
 MCNode* MCSearchTreePlayer::expand_(MCNode* node) const
 {
-    //const int n = (*node).nActions;
-    EmptyTiles next_moves = getEmptyTiles_(node->game);
+    //EmptyTiles next_moves = getEmptyTiles_(node->game);
+    SubHexBoard next_moves = getEmptySubHexBoard(node->game);
 
     const int n = next_moves.coords.size();
     TileColour child_colour = node->colour == TileColour::WHITE ? TileColour::BLACK : TileColour::WHITE;
-    for (int i=0; i<n; ++i)
+    for (int i = 0; i < n; ++i)
     {
         node->children.push_back( std::unique_ptr<MCNode>(new MCNode( node->game, child_colour ) ));
     }
@@ -151,8 +152,9 @@ MCNode* MCSearchTreePlayer::expand_(MCNode* node) const
 
 TileColour MCSearchTreePlayer::trialGame_(MCNode* node) const
 {
-    EmptyTiles empty_tiles = getEmptyTiles_(node->game);
-    int nempty = empty_tiles.sub_board.size();
+    SubHexBoard sub_board = getEmptySubHexBoard(node->game);
+    int nempty = sub_board.colours.size();
+
     HexBoard board = node->game;
 
     // assume white goes first
@@ -161,83 +163,18 @@ TileColour MCSearchTreePlayer::trialGame_(MCNode* node) const
     // fill up the empty_tiles with black and white
     for (int i = 0; i < nblack_left; ++i)
     {
-        empty_tiles.sub_board[i] = TileColour::BLACK;
+        sub_board.colours[i] = TileColour::BLACK;
     }
-    for (int i=nblack_left; i<nempty; ++i)
+    for (int i = nblack_left; i < nempty; ++i)
     {
-        empty_tiles.sub_board[i] = TileColour::WHITE;
+        sub_board.colours[i] = TileColour::WHITE;
     }
 
-    std::shuffle(empty_tiles.sub_board.begin(), empty_tiles.sub_board.end(), rng);
-
-    //printBoard_(board);
-    insertSubBoard_(empty_tiles, board);
-
-    //printBoard_(board);
-
+    std::shuffle(sub_board.colours.begin(), sub_board.colours.end(), rng);
+    insertSubHexBoard(sub_board, board);
     TileColour winner = HexGraph::fullBoardWinner(board);
 
-    /*
-    if (winner == TileColour::BLACK)
-        std::cout << "black win" << std::endl;
-    if (winner == TileColour::WHITE)
-        std::cout << "white win" << std::endl;
-    if (winner == TileColour::EMPTY)
-        std::cout << "wat" << std::endl;
-    */
-     return winner;
-}
-
-
-EmptyTiles MCSearchTreePlayer::getEmptyTiles_(const HexBoard& board) const
-{
-    // count # of empty tiles
-    int n_empty = 0;
-    for (int tile = 0; tile < board.ntiles(); ++tile)
-    {
-        if (board[tile] == TileColour::EMPTY)
-        {
-            n_empty++;
-        }
-    }
-
-    std::vector<int> coords(n_empty);
-    std::vector<TileColour> sub_board(n_empty, TileColour::EMPTY);
-
-    // coords of emtpy tiles
-    int side = board.side();
-    int k=0;
-    for (int i=0; i<side; i++)
-    {
-        for (int j=0; j<side; j++)
-        {
-            const int addr = i*side+j;
-            if (board[addr] == TileColour::EMPTY)
-            {
-                coords[k] = addr;
-                k++;
-            }
-        }
-    }
-
-    // pack both vectors into EmptyTiles struct and copy out
-    EmptyTiles et;
-    et.coords = coords;
-    et.sub_board = sub_board;
-
-    return et;
-}
-
-inline void MCSearchTreePlayer :: insertSubBoard_(const EmptyTiles& empty_tiles, HexBoard& board) const
-{
-    // gather subboard into board
-    int nempty = empty_tiles.sub_board.size();
-
-    for (int i=0; i<nempty; ++i)
-    {
-        const int addr = empty_tiles.coords[i];
-        board[addr] = empty_tiles.sub_board[i];
-    }
+    return winner;
 }
 
 static void printBoard_(HexBoard & board)

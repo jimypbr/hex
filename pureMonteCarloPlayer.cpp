@@ -8,6 +8,7 @@
 #include "board.h"
 #include "hexGraph.h"
 #include "pureMonteCarloPlayer.h"
+#include "subBoard.h"
 
 static unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 static std::mt19937 rng(seed);
@@ -16,8 +17,8 @@ static std::mt19937 rng(seed);
 
 std::pair<int,int> PureMonteCarloPlayer:: nextMove(HexBoard board) const
 {
-	EmptyTiles empty_tiles = getEmptyTiles_(board);
-	int nempty = empty_tiles.sub_board.size();
+    SubHexBoard empty_sub_board = getEmptySubHexBoard(board);
+    int nempty = empty_sub_board.colours.size();
 
 	std::vector<double> next_move_score(nempty,0);
 
@@ -25,26 +26,17 @@ std::pair<int,int> PureMonteCarloPlayer:: nextMove(HexBoard board) const
 	const int niter = NITER;
 	for (int i=0; i<nempty; ++i)
 	{
-		int trial_move = empty_tiles.coords[i];
+		int trial_move = empty_sub_board.coords[i];
 		HexBoard trial_board = board;
 		trial_board[trial_move] = TileColour::BLACK;
 		next_move_score[i] = simulatePlay_(trial_board, niter);
 	}
 
-	// debug
-	/*
-	for (int i=0; i<nempty; ++i)
-	{
-		std::cout << next_move_score[i] << ", ";
-	}
-	std::cout << std::endl;
-	*/
-
 	// return coord with highest next move score
-	int addr_empty = std::distance(next_move_score.begin(), std::max_element(next_move_score.begin(), next_move_score.end()) );
-	int addr = empty_tiles.coords[addr_empty];
-	int row = addr / board.side();
-	int col = addr % board.side();
+	int addr_best = std::distance(next_move_score.begin(), std::max_element(next_move_score.begin(), next_move_score.end()) );
+	int best_pos = empty_sub_board.coords[addr_best];
+	int row = best_pos / board.side();
+	int col = best_pos % board.side();
 
 	std::pair<int, int> next_move_coord(row, col);
 
@@ -57,8 +49,8 @@ std::pair<int,int> PureMonteCarloPlayer:: nextMove(HexBoard board) const
  */
 double PureMonteCarloPlayer:: simulatePlay_(HexBoard &board, const int niter) const
 {
-	EmptyTiles empty_tiles = getEmptyTiles_(board);
-	int nempty = empty_tiles.sub_board.size();
+    SubHexBoard sub_board = getEmptySubHexBoard(board);
+    int nempty = sub_board.colours.size();
 
 	// assume white goes first
 	int nblack_left = nempty / 2;
@@ -66,11 +58,11 @@ double PureMonteCarloPlayer:: simulatePlay_(HexBoard &board, const int niter) co
 	// fill up the empty_tiles with black and white
 	for (int i=0; i<nblack_left; ++i)
 	{
-		empty_tiles.sub_board[i] = TileColour::BLACK;
+		sub_board.colours[i] = TileColour::BLACK;
 	}
 	for (int i=nblack_left; i<nempty; ++i)
 	{
-		empty_tiles.sub_board[i] = TileColour::WHITE;
+		sub_board.colours[i] = TileColour::WHITE;
 	}
 
 	// perform monte carlo iterations
@@ -79,8 +71,8 @@ double PureMonteCarloPlayer:: simulatePlay_(HexBoard &board, const int niter) co
 	int nblack_wins = 0;
 	for (int i=0; i<niter; ++i)
 	{
-		std::shuffle(empty_tiles.sub_board.begin(), empty_tiles.sub_board.end(), rng);
-		insertSubBoard_(empty_tiles, board);
+		std::shuffle(sub_board.colours.begin(), sub_board.colours.end(), rng);
+		insertSubHexBoard(sub_board, board);
 		TileColour winner = HexGraph::fullBoardWinner(board);
 
 		if (winner == TileColour::BLACK)
@@ -88,18 +80,6 @@ double PureMonteCarloPlayer:: simulatePlay_(HexBoard &board, const int niter) co
 	}
 
 	return (double) nblack_wins / (double) niter;
-}
-
-inline void PureMonteCarloPlayer:: insertSubBoard_(const EmptyTiles& empty_tiles, HexBoard& board) const
-{
-	// gather subboard into board
-	int nempty = empty_tiles.sub_board.size();
-
-	for (int i=0; i<nempty; ++i)
-	{
-		const int addr = empty_tiles.coords[i];
-		board[addr] = empty_tiles.sub_board[i];
-	}
 }
 
 inline std::pair<int,int> PureMonteCarloPlayer:: randomMove_(HexBoard& board) const
@@ -121,44 +101,5 @@ inline std::pair<int,int> PureMonteCarloPlayer:: randomMove_(HexBoard& board) co
 
 	std::pair<int,int> coord = {row, col};
 	return coord;
-}
-
-EmptyTiles PureMonteCarloPlayer:: getEmptyTiles_(const HexBoard& board) const
-{
-	// count # of empty tiles
-	int n_empty = 0;
-	for (int tile = 0; tile < board.ntiles(); ++tile)
-	{
-		if (board[tile] == TileColour::EMPTY)
-		{
-			n_empty++;
-		}
-	}
-
-	std::vector<int> coords(n_empty);
-	std::vector<TileColour> sub_board(n_empty, TileColour::EMPTY);
-
-	// coords of emtpy tiles
-	int side = board.side();
-	int k=0;
-	for (int i=0; i<side; i++)
-	{
-		for (int j=0; j<side; j++)
-		{
-			const int addr = i*side+j;
-			if (board[addr] == TileColour::EMPTY)
-			{
-				coords[k] = addr;
-				k++;
-			}
-		}
-	}
-
-	// pack both vectors into EmptyTiles struct and copy out
-	EmptyTiles et;
-	et.coords = std::move(coords);
-	et.sub_board = std::move(sub_board);
-
-	return et;
 }
 

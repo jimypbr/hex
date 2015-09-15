@@ -16,8 +16,6 @@ class PureMonteCarloPlayer : public AIPlayer
 private:
     std::default_random_engine rng_;
     double simulatePlay_(HexBoard &board, const int niter) const;
-    void insertSubBoard_(const EmptyTiles& empty_tiles, HexBoard& board) const;
-    EmptyTiles getEmptyTiles_(const HexBoard& board) const;
     std::pair<int,int> randomMove_(HexBoard& board) const;
 
 public:
