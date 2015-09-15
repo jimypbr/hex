@@ -82,12 +82,17 @@ inline void CLI_Hex :: printBoard_()
 
 	std::cout << "   ";
 	for (int col = 0; col < board_side_; ++col)
-		std::cout << col+1 << "  ";
+    {
+        std::cout.width(3);
+        std::cout << std::left << col + 1;
+    }
 	std::cout << std::endl;
 
 	for (int row=0; row < board_side_; ++row)
 	{
-		std::cout << row+1 << "   ";
+        std::cout.width(4);
+        std::cout << std::left << row+1;
+
 		for (int col=0; col < board_side_; ++col)
 		{
 			TileColour tile = board[row*board_side_+col];
@@ -103,8 +108,11 @@ inline void CLI_Hex :: printBoard_()
 	}
 	std::cout << "    ";
 	for (int col = 0; col < board_side_; ++col)
-		std::cout << col+1 << "  ";
-	std::cout << std::endl;
+    {
+        std::cout.width(3);
+        std::cout << std::left << col + 1;
+    }
+    std::cout << std::endl;
 }
 
 inline void CLI_Hex :: printWinner_(TileColour winner)
