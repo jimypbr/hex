@@ -16,7 +16,7 @@ static std::mt19937 rng(seed);
 
 std::pair<int, int> MCSearchTreePlayer::nextMove(HexBoard board) const
 {
-    const int Niter = 1000;
+    const int Niter = 125;
 
     auto root = std::unique_ptr<MCNode>(new MCNode(board, TileColour::WHITE));
 
@@ -162,17 +162,23 @@ TileColour MCSearchTreePlayer::trialGame_(MCNode* node) const
 
     HexBoard board = node->game;
 
-    // assume white goes first
-    int nblack_left = nempty / 2;
+    TileColour colour_player2;
+    if (first_player_)
+        colour_player2 = oppositeColour(ai_colour_);
+    else
+        colour_player2 = ai_colour_;
+    TileColour colour_player1 = oppositeColour(colour_player2);
+
+    int nplayer2 = nempty / 2;
 
     // fill up the empty_tiles with black and white
-    for (int i = 0; i < nblack_left; ++i)
+    for (int i = 0; i < nplayer2; ++i)
     {
-        sub_board.colours[i] = TileColour::BLACK;
+        sub_board.colours[i] = colour_player2;
     }
-    for (int i = nblack_left; i < nempty; ++i)
+    for (int i = nplayer2; i < nempty; ++i)
     {
-        sub_board.colours[i] = TileColour::WHITE;
+        sub_board.colours[i] = colour_player1;
     }
 
     std::shuffle(sub_board.colours.begin(), sub_board.colours.end(), rng);

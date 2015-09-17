@@ -120,10 +120,10 @@ inline void CLI_Hex :: printWinner_(TileColour winner)
 	switch (winner)
 	{
 		case TileColour::WHITE:
-			std::cout << "Winner is USER (WHITE)!" << std::endl;
+			std::cout << "Winner is WHITE!" << std::endl;
 			break;
 		case TileColour::BLACK:
-			std::cout << "Winner is AI (BLACK)!" << std::endl;
+			std::cout << "Winner is BLACK!" << std::endl;
 			break;
 		default:
 			std::cout << "Winner is wat" << std::endl;

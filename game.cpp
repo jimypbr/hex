@@ -23,14 +23,14 @@ bool HexGame :: move(int x, int y)
 		return false;
 	}
 
-	main_board_[i*side_ + j] = TileColour::WHITE;
+	main_board_[i*side_ + j] = user_colour_;
 	return true;
 }
 
 void HexGame :: aiMove()
 {
 	std::pair<int,int> coord = ai_->nextMove(main_board_);
-	main_board_[coord.first * side_ + coord.second] = TileColour::BLACK;
+	main_board_[coord.first * side_ + coord.second] = ai_colour_;
 }
 
 bool HexGame :: isFinished() const

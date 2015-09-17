@@ -24,7 +24,7 @@ std::pair<int,int> PureMonteCarloPlayer:: nextMove(HexBoard board) const
 
 	// iterate through next possible moves for black and do monte carlo for each
 	const int niter = NITER;
-	for (int i=0; i<nempty; ++i)
+	for (int i = 0; i < nempty; ++i)
 	{
 		int trial_move = empty_sub_board.coords[i];
 		HexBoard trial_board = board;
@@ -52,24 +52,30 @@ double PureMonteCarloPlayer:: simulatePlay_(HexBoard &board, const int niter) co
     SubHexBoard sub_board = getEmptySubHexBoard(board);
     int nempty = sub_board.colours.size();
 
-	// assume white goes first
-	int nblack_left = nempty / 2;
+	TileColour colour_player2;
+	if (first_player_)
+		colour_player2 = oppositeColour(ai_colour_);
+	else
+		colour_player2 = ai_colour_;
+	TileColour colour_player1 = oppositeColour(colour_player2);
+
+	int nplayer2 = nempty / 2;
 
 	// fill up the empty_tiles with black and white
-	for (int i=0; i<nblack_left; ++i)
+	for (int i = 0; i < nplayer2; ++i)
 	{
-		sub_board.colours[i] = TileColour::BLACK;
+		sub_board.colours[i] = colour_player2;
 	}
-	for (int i=nblack_left; i<nempty; ++i)
+	for (int i = nplayer2; i < nempty; ++i)
 	{
-		sub_board.colours[i] = TileColour::WHITE;
+		sub_board.colours[i] = colour_player1;
 	}
 
 	// perform monte carlo iterations
 	// shuffle subboard, reinsert, and evaluate winner
 
 	int nAI_wins = 0;
-	for (int i=0; i<niter; ++i)
+	for (int i = 0; i < niter; ++i)
 	{
 		std::shuffle(sub_board.colours.begin(), sub_board.colours.end(), rng);
 		insertSubHexBoard(sub_board, board);
@@ -81,25 +87,3 @@ double PureMonteCarloPlayer:: simulatePlay_(HexBoard &board, const int niter) co
 
 	return (double) nAI_wins / (double) niter;
 }
-
-inline std::pair<int,int> PureMonteCarloPlayer:: randomMove_(HexBoard& board) const
-{
-	std::uniform_int_distribution<int> rng_uniform(0,board.side()-1);
-	auto random_coord = std::bind ( rng_uniform, rng_ );
-
-	int row, col;
-	for (;;)
-	{
-		row = random_coord();
-		col = random_coord();
-
-		if (board[row*board.side() + col] == TileColour::EMPTY)
-		{
-			break;
-		}
-	}
-
-	std::pair<int,int> coord = {row, col};
-	return coord;
-}
-

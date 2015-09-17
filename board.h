@@ -5,6 +5,28 @@
 enum class TileColour {EMPTY, WHITE, BLACK};
 
 /**
+ * Return given a tile colour, return its opposite.
+ * The opposite of EMPTY is EMPTY.
+ */
+inline TileColour oppositeColour(TileColour c)
+{
+    TileColour opposite;
+    switch(c)
+    {
+        case TileColour::BLACK:
+            opposite = TileColour::WHITE;
+            break;
+        case TileColour :: WHITE:
+            opposite = TileColour::BLACK;
+            break;
+        default:
+            opposite = TileColour::EMPTY;
+            break;
+    }
+    return opposite;
+}
+
+/**
  * The Hex game board.
  * Contains the board dimensions and the TileColour (EMPTY / WHITE / BLACK) of
  * every tile in the board.

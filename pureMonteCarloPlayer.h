@@ -15,9 +15,10 @@ class PureMonteCarloPlayer : public AIPlayer
 {
 private:
     TileColour ai_colour_;
+    bool first_player_;
+
     std::default_random_engine rng_;
     double simulatePlay_(HexBoard &board, const int niter) const;
-    std::pair<int,int> randomMove_(HexBoard& board) const;
 
 public:
     PureMonteCarloPlayer() : ai_colour_(TileColour::BLACK)
@@ -25,7 +26,7 @@ public:
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         rng_.seed(seed);
     }
-    PureMonteCarloPlayer(TileColour c) : ai_colour_(c)
+    PureMonteCarloPlayer(TileColour c, bool first_player) : ai_colour_(c), first_player_(first_player)
     {
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         rng_.seed(seed);

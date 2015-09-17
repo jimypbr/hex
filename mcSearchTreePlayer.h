@@ -24,6 +24,8 @@ private:
      * This AIPlayers colour.
      * */
     TileColour ai_colour_;
+    bool first_player_;
+
     std::uniform_real_distribution<double> rng_double_;
     std::default_random_engine rng_;
 
@@ -38,7 +40,7 @@ public:
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         rng_.seed(seed);
     }
-    MCSearchTreePlayer(TileColour c) : ai_colour_(c), rng_double_(0,1)
+    MCSearchTreePlayer(TileColour c, bool first_player) : ai_colour_(c), first_player_(first_player), rng_double_(0,1)
     {
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         rng_.seed(seed);
