@@ -16,9 +16,9 @@ static std::mt19937 rng(seed);
 
 std::pair<int, int> MCSearchTreePlayer::nextMove(HexBoard board) const
 {
-    const int Niter = 125;
+    const int Niter = 2000;
 
-    auto root = std::unique_ptr<MCNode>(new MCNode(board, TileColour::WHITE));
+    auto root = std::unique_ptr<MCNode>(new MCNode(board, oppositeColour(ai_colour_)));
 
     int count = 0;
     for (int i = 0; i < board.ntiles(); ++i)
@@ -52,7 +52,7 @@ std::pair<int, int> MCSearchTreePlayer::nextMove(HexBoard board) const
         MCNode* newNode = select_(cur);
         visited.push_back(newNode);
 
-        for (int i = 0; i < 16; ++i)
+        for (int t = 0; t < 50; ++t)
         {
             TileColour winner = trialGame_(newNode);
 
