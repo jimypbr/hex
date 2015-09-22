@@ -10,11 +10,11 @@
 #include "mcNode.h"
 
 
-static void printBoard_(HexBoard & board);
+static void printBoard_(Board & board);
 static unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 static std::mt19937 rng(seed);
 
-std::pair<int, int> MCSearchTreePlayer::nextMove(HexBoard board) const
+std::pair<int, int> MCSearchTreePlayer::nextMove(Board board) const
 {
     const int Niter = 2000;
 
@@ -128,7 +128,7 @@ MCNode* MCSearchTreePlayer::select_(MCNode* node) const
 
 MCNode* MCSearchTreePlayer::expand_(MCNode* node) const
 {
-    SubHexBoard next_moves = getEmptySubHexBoard(node->game);
+    SubBoard next_moves = getEmptySubBoard(node->game);
     const int n = next_moves.coords.size();
     TileColour child_colour = oppositeColour(node->colour);
 
@@ -157,10 +157,10 @@ MCNode* MCSearchTreePlayer::expand_(MCNode* node) const
 
 TileColour MCSearchTreePlayer::trialGame_(MCNode* node) const
 {
-    SubHexBoard sub_board = getEmptySubHexBoard(node->game);
+    SubBoard sub_board = getEmptySubBoard(node->game);
     int nempty = sub_board.colours.size();
 
-    HexBoard board = node->game;
+    Board board = node->game;
 
     TileColour colour_player2;
     if (first_player_)
@@ -182,13 +182,13 @@ TileColour MCSearchTreePlayer::trialGame_(MCNode* node) const
     }
 
     std::shuffle(sub_board.colours.begin(), sub_board.colours.end(), rng);
-    insertSubHexBoard(sub_board, board);
+    insertSubBoard(sub_board, board);
     TileColour winner = HexGraph::fullBoardWinner(board);
 
     return winner;
 }
 
-static void printBoard_(HexBoard & board)
+static void printBoard_(Board & board)
 {
     int board_side_ = board.side();
     std::cout << "   ";

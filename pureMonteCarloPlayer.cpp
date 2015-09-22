@@ -13,11 +13,11 @@
 static unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 static std::mt19937 rng(seed);
 
-#define NITER 2000
+#define NITER 200
 
-std::pair<int,int> PureMonteCarloPlayer:: nextMove(HexBoard board) const
+std::pair<int,int> PureMonteCarloPlayer:: nextMove(Board board) const
 {
-    SubHexBoard empty_sub_board = getEmptySubHexBoard(board);
+    SubBoard empty_sub_board = getEmptySubBoard(board);
     int nempty = empty_sub_board.colours.size();
 
 	std::vector<double> next_move_score(nempty,0);
@@ -27,7 +27,7 @@ std::pair<int,int> PureMonteCarloPlayer:: nextMove(HexBoard board) const
 	for (int i = 0; i < nempty; ++i)
 	{
 		int trial_move = empty_sub_board.coords[i];
-		HexBoard trial_board = board;
+		Board trial_board = board;
 		trial_board[trial_move] = ai_colour_;
 		next_move_score[i] = simulatePlay_(trial_board, niter);
 	}
@@ -47,9 +47,9 @@ std::pair<int,int> PureMonteCarloPlayer:: nextMove(HexBoard board) const
  * Given a partially filled hex board, return the win/lose ratio for the aiplayer after niter number
  * of monteCarlo trials, which randomly fill the rest of the baord and then calculates who won.
  */
-double PureMonteCarloPlayer:: simulatePlay_(HexBoard &board, const int niter) const
+double PureMonteCarloPlayer:: simulatePlay_(Board &board, const int niter) const
 {
-    SubHexBoard sub_board = getEmptySubHexBoard(board);
+    SubBoard sub_board = getEmptySubBoard(board);
     int nempty = sub_board.colours.size();
 
 	TileColour colour_player2;
@@ -78,7 +78,7 @@ double PureMonteCarloPlayer:: simulatePlay_(HexBoard &board, const int niter) co
 	for (int i = 0; i < niter; ++i)
 	{
 		std::shuffle(sub_board.colours.begin(), sub_board.colours.end(), rng);
-		insertSubHexBoard(sub_board, board);
+		insertSubBoard(sub_board, board);
 		TileColour winner = HexGraph::fullBoardWinner(board);
 
 		if (winner == ai_colour_)

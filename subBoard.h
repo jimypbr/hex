@@ -12,7 +12,7 @@
  * Data structure representing a subset of the tile positions of
  * a hex board and the colour of the piece at each of those positions.
  */
-struct SubHexBoard
+struct SubBoard
 {
     // 1d coordinates of the empty tiles
     std::vector<int> coords;
@@ -24,10 +24,10 @@ struct SubHexBoard
 /**
  * Insert the pieces and corresponding tiles of a sub-board
  *
- * @param sub_board A sub-board of tiles with colours to be inserted into the HexBoard
+ * @param sub_board A sub-board of tiles with colours to be inserted into the Board
  * @return board The hex board updated with the positions from the sub-board.
  */
-void insertSubHexBoard(const SubHexBoard& sub_board, HexBoard& board);
+void insertSubBoard(const SubBoard& sub_board, Board& board);
 
 /**
  * Create a sub-board from all the empty positions from a hex board.
@@ -35,6 +35,6 @@ void insertSubHexBoard(const SubHexBoard& sub_board, HexBoard& board);
  * @param board A hex board
  * @return A sub-board of the empty positions in board.
  */
-SubHexBoard getEmptySubHexBoard(const HexBoard& board);
+SubBoard getEmptySubBoard(const Board& board);
 
 #endif //HEX_SUBBOARD_H

@@ -6,7 +6,7 @@
 #include "board.h"
 #include "subBoard.h"
 
-SubHexBoard getEmptySubHexBoard(const HexBoard& board)
+SubBoard getEmptySubBoard(const Board& board)
 {
     // count # of empty tiles
     int n_empty = 0;
@@ -38,14 +38,14 @@ SubHexBoard getEmptySubHexBoard(const HexBoard& board)
     }
 
     // pack both vectors into EmptyTiles struct and copy out
-    SubHexBoard sb;
+    SubBoard sb;
     sb.coords = std::move(coords);
     sb.colours = std::move(colours);
 
     return sb;
 }
 
-void insertSubHexBoard(const SubHexBoard& sub_board, HexBoard& board)
+void insertSubBoard(const SubBoard& sub_board, Board& board)
 {
     // gather subboard into board
     int size = sub_board.colours.size();

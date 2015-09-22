@@ -18,7 +18,7 @@ private:
     bool first_player_;
 
     std::default_random_engine rng_;
-    double simulatePlay_(HexBoard &board, const int niter) const;
+    double simulatePlay_(Board &board, const int niter) const;
 
 public:
     PureMonteCarloPlayer() : ai_colour_(TileColour::BLACK)
@@ -31,5 +31,5 @@ public:
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         rng_.seed(seed);
     }
-    std::pair<int,int> nextMove(HexBoard board) const override;
+    std::pair<int,int> nextMove(Board board) const override;
 };

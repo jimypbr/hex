@@ -46,6 +46,6 @@ public:
         rng_.seed(seed);
     }
 
-    std::pair<int, int> nextMove(HexBoard board) const override;
+    std::pair<int, int> nextMove(Board board) const override;
 };
 

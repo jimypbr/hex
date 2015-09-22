@@ -17,12 +17,12 @@ struct MCNode
     int nEmpty;
     int move;
 
-    HexBoard game;
+    Board game;
     TileColour colour;
 
     std::vector<std::unique_ptr<MCNode>> children;
 
-    MCNode(HexBoard game, TileColour col) : game(game), colour(col)
+    MCNode(Board game, TileColour col) : game(game), colour(col)
     {}
 
     /**

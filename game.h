@@ -15,7 +15,7 @@ class HexGame
 		int ntiles_;
 
         /* The board representing the current state of play. */
-		HexBoard main_board_;
+		Board main_board_;
 		std::unique_ptr<AIPlayer> ai_;
 		TileColour user_colour_;
 		TileColour ai_colour_;
@@ -59,11 +59,11 @@ class HexGame
 		TileColour winner() const;
 
         /**
-         * Getter for the HexBoard object in this game object.
+         * Getter for the Board object in this game object.
          *
-         * @return Reference of HexBoard stored in this.
+         * @return Reference of Board stored in this.
          */
-		const HexBoard& get_main_board() const
+		const Board& get_main_board() const
 		{
 			return main_board_;
 		}

@@ -20,7 +20,7 @@ namespace HexGraph
 	 * @param board A hex board to be evaluated
 	 * @return bool true if white has won; else false
 	 */
-	bool whiteWon(const HexBoard& board);
+	bool whiteWon(const Board& board);
 
 	/**
 	 * Has black won?
@@ -28,7 +28,7 @@ namespace HexGraph
 	 * @param board A hex board to be evaluated
 	 * @return bool true if black has won; else false
 	 */
-	bool blackWon(const HexBoard& board);
+	bool blackWon(const Board& board);
 
 	/**
 	 * Calculate the winning colour in the specialised case
@@ -37,5 +37,5 @@ namespace HexGraph
 	 * @param board A hex board where all the tiles are filled
 	 * @return The colour of the winning player.
 	 */
-	TileColour fullBoardWinner(const HexBoard& board);
+	TileColour fullBoardWinner(const Board& board);
 };
