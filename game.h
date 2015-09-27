@@ -3,7 +3,7 @@
 #include "board.h"
 #include "hexGraph.h"
 #include "aiPlayer.h"
-#include "aiPlayerFactory.h"
+#include "mcSearchTreePlayer.h"
 
 class HexGame
 {
@@ -31,8 +31,7 @@ class HexGame
 						 user_colour_(TileColour::WHITE), \
 						 ai_colour_(TileColour::BLACK)
         {
-            //ai_ = AIPlayerFactory::create(AIPlayerType::PURE_MONTE_CARLO);
-			ai_ = AIPlayerFactory::create(AIPlayerType::MC_SEARCH_TREE);
+			ai_ = std::unique_ptr<AIPlayer>(new MCSearchTreePlayer(ai_colour_, false));
         }
 
 		/**
