@@ -1,9 +1,13 @@
 #pragma once
 
+#include <memory>
 #include "board.h"
 #include "hexGraph.h"
 #include "aiPlayer.h"
 #include "mcSearchTreePlayer.h"
+#include "player.h"
+#include "humanPlayerCLI.h"
+#include "computerPlayer.h"
 
 class HexGame
 {
@@ -16,9 +20,10 @@ class HexGame
 
         /* The board representing the current state of play. */
 		Board main_board_;
-		std::unique_ptr<AIPlayer> ai_;
-		TileColour user_colour_;
-		TileColour ai_colour_;
+		std::unique_ptr<Player> p1_;
+		std::unique_ptr<Player> p2_;
+		TileColour p1_colour_ = TileColour::WHITE;
+		TileColour p2_colour_ = TileColour::BLACK;
 
 	public:
         /**
@@ -27,24 +32,27 @@ class HexGame
          * Creates an instance of HexGame with a board of side s.
          * @param s: size of the side of the Hex board.
          */
-		HexGame(int s) : side_(s), ntiles_(s*s), main_board_(s), \
-						 user_colour_(TileColour::WHITE), \
-						 ai_colour_(TileColour::BLACK)
+		HexGame(int s) : side_(s), ntiles_(s*s), main_board_(s)
         {
-			ai_ = std::unique_ptr<AIPlayer>(new MCSearchTreePlayer(ai_colour_, false));
+			p1_ = std::unique_ptr<Player>(new HumanPlayerCLI(p1_colour_));
+            p2_ = std::unique_ptr<Player>(new ComputerPlayer(p2_colour_, AIStrategyEnum::MCTS, true));
+        }
+
+        HexGame(int s, std::unique_ptr<Player> p1, std::unique_ptr<Player> p2) : side_(s), ntiles_(s*s), main_board_(s)
+        {
+            p1_ = std::move(p1);
+            p2_ = std::move(p2);
         }
 
 		/**
-		 * Attempt to place human piece at board position (x,y).
-		 *
-		 * out: bool -- true if move is valid, else false.
-		 * */
-		bool move(int x, int y);
+		 * Player 1 move.
+		 */
+		void movePlayer1();
 
         /**
-         * AI decides its next move and places its piece on the board.
+         * Player 2 move.
          */
-		void aiMove();
+		void movePlayer2();
 
         /**
          * @return True if the game has a winner, else false.

@@ -12,9 +12,11 @@ void CLI_Hex :: gameLoop()
 	// main loop
 	for (;;)
 	{
-		userInputMove_();
+		game_.movePlayer1();
         if (game_.isFinished()) break;
-		game_.aiMove();
+		clearScreen_();
+		printBoard_();
+		game_.movePlayer2();
 		clearScreen_();
 		printBoard_();
         if (game_.isFinished()) break;
@@ -22,7 +24,9 @@ void CLI_Hex :: gameLoop()
 	std::cout << "Game finished!!" << std::endl;
 
 	// print the winner
-	TileColour winner = game_.winner();	
+	clearScreen_();
+	printBoard_();
+	TileColour winner = game_.winner();
 
 	printWinner_(winner);
 }
@@ -46,7 +50,8 @@ inline void CLI_Hex :: startGame_()
 
 	// initalise internals with the size
 	board_side_ = s;
-	game_ = HexGame(s);
+	game_ = HexGame(s, std::unique_ptr<Player>(new ComputerPlayer(TileColour::WHITE, AIStrategyEnum::MCTS, true)),
+					std::unique_ptr<Player>(new ComputerPlayer(TileColour::BLACK, AIStrategyEnum::MCTS, false)));
 }
 
 inline bool CLI_Hex :: validGameSize_(int s)
@@ -59,21 +64,6 @@ inline bool CLI_Hex :: validGameSize_(int s)
 		return false;
 	else
 		return true;
-}
-
-inline void CLI_Hex :: userInputMove_()
-{
-	int x, y;
-
-	while ( (std::cout << "Enter x, y coordinates: x y" << std::endl) \
-			&& (!(std::cin >> x >> y) \
-			|| !(game_.move(x, y)) )
-		  )
-	{
-		std::cout << "That's not a valid move. Try again." << std::endl;
-		std::cin.clear();
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-	}	
 }
 
 inline void CLI_Hex :: printBoard_()

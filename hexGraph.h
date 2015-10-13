@@ -14,6 +14,8 @@ namespace HexGraph
 	 * */
 	std::vector<int> neighbourNodes(int t, int side);
 
+	void neighbourNodesFast(int t, int side, std::vector<int> &neighbours);
+
 	/**
 	 * Has white won?
 	 *

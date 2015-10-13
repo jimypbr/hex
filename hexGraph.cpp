@@ -107,6 +107,8 @@ bool HexGraph :: whiteWon(const Board & board)
 	 * A path connecting EAST->WEST => black win
 	 */
 	int ntiles = board.ntiles();
+    int neighbours_size = std::max(6, board.side());
+    std::vector<int> neighbours(neighbours_size);
 	std::vector<bool> visited(ntiles+4, false);
 	std::queue<int> q;
 
@@ -120,9 +122,13 @@ bool HexGraph :: whiteWon(const Board & board)
 		int s = q.front();
 		q.pop();
 
-		std::vector<int> neighbours = neighbourNodes(s, board.side());
+		//std::vector<int> neighbours = neighbourNodes(s, board.side());
+        neighbourNodesFast(s, board.side(), neighbours);
 		for (auto n : neighbours)
 		{
+            if (n < 0)
+                continue;
+
 			bool connected;
 			if (n < ntiles)
 				connected = (board[n] == TileColour::WHITE);
@@ -140,10 +146,6 @@ bool HexGraph :: whiteWon(const Board & board)
 	}
 
 	// if south node is visited then white wins
-	//for (auto n : visited)
-	//	std::cout << n << ", ";
-	//std::cout << std::endl;
-
 	return visited[south];
 }
 
@@ -159,6 +161,8 @@ bool HexGraph :: blackWon(const Board & board)
 	 * A path connecting WEST->EAST => black win
 	 */
 	int ntiles = board.ntiles();
+    int neighbours_size = std::max(6, board.side());
+    std::vector<int> neighbours(neighbours_size);
 	std::vector<bool> visited(ntiles+4, false);
 	std::queue<int> q;
 
@@ -172,9 +176,13 @@ bool HexGraph :: blackWon(const Board & board)
 		int s = q.front();
 		q.pop();
 
-		std::vector<int> neighbours = neighbourNodes(s, board.side());
+		//std::vector<int> neighbours = neighbourNodes(s, board.side());
+        neighbourNodesFast(s, board.side(), neighbours);
 		for (auto n : neighbours)
 		{
+            if (n < 0)
+                continue;
+
 			bool connected;
 			if (n < ntiles)
 				connected = (board[n] == TileColour::BLACK);
@@ -192,9 +200,6 @@ bool HexGraph :: blackWon(const Board & board)
 	}
 
 	// if east node is visited then black wins
-	//for (auto n : visited)
-	//	std::cout << n << ", ";
-	//std::cout << std::endl;
 	return visited[east];
 }
 
@@ -210,4 +215,92 @@ TileColour HexGraph :: fullBoardWinner(const Board & board)
 		return TileColour::WHITE;
 	else
 		return TileColour::BLACK;
+}
+
+void HexGraph::neighbourNodesFast(int t, int side, std::vector<int> &neighbours)
+{
+	int ntiles = side*side;
+
+    // init neighbours vector to null value
+    for (auto& neighbour : neighbours)
+        neighbour = -1;
+
+	int nidx = 0;
+
+	// virtual nodes
+	if (t == ntiles)
+	{
+		//north
+		for (int tile = 0; tile < side; ++tile)
+            neighbours[nidx++] = tile;
+	}
+	else if (t == ntiles+1)
+	{
+		//south
+		for (int tile = ntiles-side-1; tile < ntiles; ++tile)
+			neighbours[nidx++] = tile;
+	}
+	else if (t == ntiles+2)
+	{
+		// west
+		for (int tile = 0; tile < side*side; tile+=side)
+			neighbours[nidx++] = tile;
+	}
+	else if (t == ntiles+3)
+	{
+		// east
+		for (int tile = side-1; tile < side*side; tile+=side)
+			neighbours[nidx++] = tile;
+	}
+	else
+	{
+		// real nodes
+
+		// 2d coordinates
+		int row = t / side;
+		int col = t % side;
+
+		if (row == 0)
+		{
+			neighbours[nidx++] = ntiles;
+			neighbours[nidx++] = coord2index(row+1,col,side);
+		}
+		else if (row == (side-1))
+		{
+			neighbours[nidx++] = ntiles + 1;
+			neighbours[nidx++] = coord2index(row-1,col,side);
+		}
+		else
+		{
+			neighbours[nidx++] = coord2index(row+1,col,side);
+			neighbours[nidx++] = coord2index(row-1,col,side);
+		}
+
+		if (col == 0)
+		{
+			neighbours[nidx++] = ntiles+2;
+			neighbours[nidx++] = coord2index(row,col+1,side);
+
+			if (row > 0)
+				neighbours[nidx++] = coord2index(row-1,col+1,side);
+		}
+		else if (col == (side-1))
+		{
+			neighbours[nidx++] = ntiles + 3;
+			neighbours[nidx++] = coord2index(row,col-1,side);
+
+			if (row < (side-1))
+				neighbours[nidx++] = coord2index(row+1,col-1,side);
+		}
+		else
+		{
+			neighbours[nidx++] = coord2index(row,col+1,side);
+			neighbours[nidx++] = coord2index(row,col-1,side);
+
+			if (row > 0)
+				neighbours[nidx++] = coord2index(row-1,col+1,side);
+			if (row < (side-1))
+				neighbours[nidx++] = coord2index(row+1,col-1,side);
+		}
+	}
 }

@@ -1,24 +1,27 @@
+//
+// Created by James on 01/10/15.
+//
 
+#include <utility>
 #include <iostream>
 #include <vector>
 #include <memory>
 #include <algorithm>
-#include "mcSearchTreePlayer.h"
+#include <chrono>
 #include "board.h"
 #include "subBoard.h"
-#include "cli_hex.h"
 #include "mcNode.h"
+#include "hexGraph.h"
+#include "monteCarloTreeSearch.h"
 
-
-static void printBoard_(Board & board);
 static unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 static std::mt19937 rng(seed);
 
-std::pair<int, int> MCSearchTreePlayer::nextMove(Board board) const
+std::pair<int, int> MonteCarloTreeSearch::nextMove(Board &board, TileColour ai_colour, bool is_first) const
 {
     const int Niter = 2000;
 
-    auto root = std::unique_ptr<MCNode>(new MCNode(board, oppositeColour(ai_colour_)));
+    auto root = std::unique_ptr<MCNode>(new MCNode(board, oppositeColour(ai_colour)));
 
     int count = 0;
     for (int i = 0; i < board.ntiles(); ++i)
@@ -41,20 +44,26 @@ std::pair<int, int> MCSearchTreePlayer::nextMove(Board board) const
         // find best leaf to expand
         while ( !(*cur).isLeaf() )
         {
-            cur = select_(cur);
+            cur = select_(cur, ai_colour);
             visited.push_back(cur);
         }
         // is terminal node?
         if (cur->nEmpty == 0)
+        {
+            // update stats or not??
+            TileColour winner = HexGraph::fullBoardWinner(cur->game);
+            for (const auto &node : visited)
+                node->updateStats(winner);
             continue;
+        }
         expand_(cur);
 
-        MCNode* newNode = select_(cur);
+        MCNode* newNode = select_(cur, ai_colour);
         visited.push_back(newNode);
 
-        for (int t = 0; t < 50; ++t)
+        for (int t = 0; t < 30; ++t)
         {
-            TileColour winner = trialGame_(newNode);
+            TileColour winner = trialGame_(newNode, ai_colour, is_first);
 
             for (const auto &node : visited)
                 node->updateStats(winner);
@@ -66,10 +75,15 @@ std::pair<int, int> MCSearchTreePlayer::nextMove(Board board) const
 
     // Return that node's move
     int move = best_node->move;
-    return std::pair<int, int>(move / board.side(), move % board.side());
+    return std::pair<int, int>(move / board.side() + 1, (move % board.side()) + 1);
 }
 
-MCNode* MCSearchTreePlayer :: bestMove_(MCNode* node) const
+double MonteCarloTreeSearch::opponentWinChance(Board &board, TileColour opponent_colour, bool is_first) const
+{
+    return 0.0;
+}
+
+MCNode* MonteCarloTreeSearch::bestMove_(MCNode* node) const
 {
     double best_score = -1;
     MCNode* best_node = nullptr;
@@ -94,7 +108,7 @@ MCNode* MCSearchTreePlayer :: bestMove_(MCNode* node) const
     return best_node;
 }
 
-MCNode* MCSearchTreePlayer::select_(MCNode* node) const
+MCNode* MonteCarloTreeSearch::select_(MCNode* node, TileColour ai_colour) const
 {
     MCNode* selected = nullptr;
     double bestValue = -1.0;
@@ -110,7 +124,7 @@ MCNode* MCSearchTreePlayer::select_(MCNode* node) const
         auto c = cptr.get();
 
         int nAIWins;
-        if (ai_colour_ == TileColour::BLACK)
+        if (ai_colour == TileColour::BLACK)
             nAIWins = c->nBlackWins;
         else
             nAIWins = c->nWhiteWins;
@@ -126,7 +140,7 @@ MCNode* MCSearchTreePlayer::select_(MCNode* node) const
     return selected;
 }
 
-MCNode* MCSearchTreePlayer::expand_(MCNode* node) const
+MCNode* MonteCarloTreeSearch::expand_(MCNode* node) const
 {
     SubBoard next_moves = getEmptySubBoard(node->game);
     const int n = next_moves.coords.size();
@@ -155,7 +169,7 @@ MCNode* MCSearchTreePlayer::expand_(MCNode* node) const
     return cptr;
 }
 
-TileColour MCSearchTreePlayer::trialGame_(MCNode* node) const
+TileColour MonteCarloTreeSearch::trialGame_(MCNode* node, TileColour ai_colour, bool first_player) const
 {
     SubBoard sub_board = getEmptySubBoard(node->game);
     int nempty = sub_board.colours.size();
@@ -163,10 +177,10 @@ TileColour MCSearchTreePlayer::trialGame_(MCNode* node) const
     Board board = node->game;
 
     TileColour colour_player2;
-    if (first_player_)
-        colour_player2 = oppositeColour(ai_colour_);
+    if (first_player)
+        colour_player2 = oppositeColour(ai_colour);
     else
-        colour_player2 = ai_colour_;
+        colour_player2 = ai_colour;
     TileColour colour_player1 = oppositeColour(colour_player2);
 
     int nplayer2 = nempty / 2;
@@ -186,34 +200,4 @@ TileColour MCSearchTreePlayer::trialGame_(MCNode* node) const
     TileColour winner = HexGraph::fullBoardWinner(board);
 
     return winner;
-}
-
-static void printBoard_(Board & board)
-{
-    int board_side_ = board.side();
-    std::cout << "   ";
-    for (int col = 0; col < board_side_; ++col)
-        std::cout << col+1 << "  ";
-    std::cout << std::endl;
-
-    for (int row=0; row < board_side_; ++row)
-    {
-        std::cout << row+1 << "   ";
-        for (int col=0; col < board_side_; ++col)
-        {
-            TileColour tile = board[row*board_side_+col];
-            if (tile == TileColour::WHITE)
-                std::cout << "W  ";
-            else if (tile == TileColour::BLACK)
-                std::cout << "B  ";
-            else
-                std::cout << "-  ";
-        }
-        std::cout << " " << row+1 << std::endl;
-        std::cout << std::string(row+1,' ');	// indent next row
-    }
-    std::cout << "    ";
-    for (int col = 0; col < board_side_; ++col)
-        std::cout << col+1 << "  ";
-    std::cout << std::endl;
 }

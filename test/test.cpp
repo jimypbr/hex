@@ -6,16 +6,16 @@
 #include "../hexGraph.h"
 #include "../board.h"
 
-static void printBoard_(const HexBoard & board);
-static void test_white_win(const HexBoard & board);
-static void test_black_win(const HexBoard & board);
+static void printBoard_(const Board & board);
+static void test_white_win(const Board & board);
+static void test_black_win(const Board & board);
 static int test_number = 0;
 
 int main()
 {
     std::cout << "LOLOL" << std::endl;
 
-    HexBoard board(5);
+    Board board(5);
 
     /* Test board configuration.
             1  2  3  4  5
@@ -49,7 +49,7 @@ int main()
     test_black_win(board);
 
     // fill board up
-    board = HexBoard(5);
+    board = Board(5);
     //board[3] = TileColour::BLACK;
     //board[4] = TileColour::BLACK;
     board[8] = TileColour::BLACK;
@@ -64,7 +64,7 @@ int main()
     test_black_win(board);
 
     // fill board up
-    board = HexBoard(5);
+    board = Board(5);
     int i = 4;
     board[i*5+0] = TileColour::BLACK;
     board[i*5+1] = TileColour::BLACK;
@@ -75,7 +75,7 @@ int main()
     test_black_win(board);
 
     // fill board up
-    board = HexBoard(5);
+    board = Board(5);
     //board[3] = TileColour::BLACK;
     //board[4] = TileColour::BLACK;
     board[7] = TileColour::BLACK;
@@ -91,7 +91,7 @@ int main()
     test_black_win(board);
 
     // fill board up
-    board = HexBoard(5);
+    board = Board(5);
     //board[3] = TileColour::BLACK;
     //board[4] = TileColour::BLACK;
     board[4] = TileColour::WHITE;
@@ -108,7 +108,7 @@ int main()
     return 0;
 }
 
-static void test_black_win(const HexBoard & board)
+static void test_black_win(const Board & board)
 {
     printBoard_(board);
 
@@ -123,7 +123,7 @@ static void test_black_win(const HexBoard & board)
     std::cout << std::endl;
 }
 
-static void test_white_win(const HexBoard & board)
+static void test_white_win(const Board & board)
 {
     printBoard_(board);
 
@@ -138,7 +138,7 @@ static void test_white_win(const HexBoard & board)
     std::cout << std::endl;
 }
 
-static void printBoard_(const HexBoard & board)
+static void printBoard_(const Board & board)
 {
 
     int board_side_ = board.side();

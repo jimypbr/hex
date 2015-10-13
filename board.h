@@ -31,7 +31,7 @@ inline TileColour oppositeColour(TileColour c)
  * Contains the board dimensions and the TileColour (EMPTY / WHITE / BLACK) of
  * every tile in the board.
  */
-class HexBoard
+class Board
 {
 private:
     /**
@@ -54,7 +54,7 @@ public:
      * Constructor
      * @param s Board side length
      */
-    HexBoard(int s): side_(s), ntiles_(s*s), board_(s*s, TileColour::EMPTY) {}
+    Board(int s): side_(s), ntiles_(s*s), board_(s*s, TileColour::EMPTY) {}
 
     /**
      * @return number of tiles on side of board
@@ -77,6 +77,12 @@ public:
      */
     TileColour& operator[](int idx)
     {
+        return board_[idx];
+    }
+
+    TileColour& operator() (unsigned row, unsigned col)
+    {
+        int idx = (row-1) * side_ + (col-1);
         return board_[idx];
     }
     const TileColour& operator[](int idx) const
