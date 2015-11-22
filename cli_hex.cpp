@@ -50,7 +50,7 @@ inline void CLI_Hex :: startGame_()
 
 	// initalise internals with the size
 	board_side_ = s;
-	game_ = HexGame(s, std::unique_ptr<Player>(new ComputerPlayer(TileColour::WHITE, AIStrategyEnum::MCTS, true)),
+	game_ = HexGame(s, std::unique_ptr<Player>(new HumanPlayerCLI(TileColour::WHITE)),
 					std::unique_ptr<Player>(new ComputerPlayer(TileColour::BLACK, AIStrategyEnum::MCTS, false)));
 }
 
