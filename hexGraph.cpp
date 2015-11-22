@@ -10,90 +10,6 @@ static inline int coord2index(int row, int col, int side)
 	return row*side + col;
 }
 
-std::vector<int> HexGraph ::neighbourNodes(int t, int side)
-{
-	int ntiles = side*side;
-	std::vector<int> neighbours;
-
-	// virtual nodes
-	if (t == ntiles)
-	{
-		//north
-		for (int i = 0; i < side; ++i)
-			neighbours.push_back(i);
-	}
-	else if (t == ntiles+1)
-	{
-		//south
-		for (int i = ntiles-side-1; i < ntiles; ++i)
-			neighbours.push_back(i);
-	}
-	else if (t == ntiles+2)
-	{
-		// west
-		for (int i = 0; i < side*side; i+=side)
-			neighbours.push_back(i);
-	}
-	else if (t == ntiles+3)
-	{
-		// east
-		for (int i = side-1; i < side*side; i+=side)
-			neighbours.push_back(i);
-	}
-	else
-	{
-		// real nodes
-
-		// 2d coordinates
-		int row = t / side;
-		int col = t % side;
-
-		if (row == 0)
-		{
-			neighbours.push_back(ntiles);
-			neighbours.push_back(coord2index(row+1,col,side));
-		}
-		else if (row == (side-1))
-		{
-			neighbours.push_back(ntiles + 1);
-			neighbours.push_back(coord2index(row-1,col,side));
-		}
-		else
-		{
-			neighbours.push_back(coord2index(row+1,col,side));
-			neighbours.push_back(coord2index(row-1,col,side));
-		}
-
-		if (col == 0)
-		{
-			neighbours.push_back(ntiles+2);
-			neighbours.push_back(coord2index(row,col+1,side));
-
-			if (row > 0)
-				neighbours.push_back(coord2index(row-1,col+1,side));
-		}
-		else if (col == (side-1))
-		{
-			neighbours.push_back(ntiles + 3);
-			neighbours.push_back(coord2index(row,col-1,side));
-
-			if (row < (side-1))
-				neighbours.push_back(coord2index(row+1,col-1,side));
-		}
-		else
-		{
-			neighbours.push_back(coord2index(row,col+1,side));
-			neighbours.push_back(coord2index(row,col-1,side));
-
-			if (row > 0)
-				neighbours.push_back(coord2index(row-1,col+1,side));
-			if (row < (side-1))
-				neighbours.push_back(coord2index(row+1,col-1,side));
-
-		}
-	}
-	return neighbours;
-}
 
 bool HexGraph :: whiteWon(const Board & board)
 {
@@ -303,4 +219,89 @@ void HexGraph::neighbourNodesFast(int t, int side, std::vector<int> &neighbours)
 				neighbours[nidx++] = coord2index(row+1,col-1,side);
 		}
 	}
+}
+
+std::vector<int> HexGraph ::neighbourNodes(int t, int side)
+{
+	int ntiles = side*side;
+	std::vector<int> neighbours;
+
+	// virtual nodes
+	if (t == ntiles)
+	{
+		//north
+		for (int i = 0; i < side; ++i)
+			neighbours.push_back(i);
+	}
+	else if (t == ntiles+1)
+	{
+		//south
+		for (int i = ntiles-side-1; i < ntiles; ++i)
+			neighbours.push_back(i);
+	}
+	else if (t == ntiles+2)
+	{
+		// west
+		for (int i = 0; i < side*side; i+=side)
+			neighbours.push_back(i);
+	}
+	else if (t == ntiles+3)
+	{
+		// east
+		for (int i = side-1; i < side*side; i+=side)
+			neighbours.push_back(i);
+	}
+	else
+	{
+		// real nodes
+
+		// 2d coordinates
+		int row = t / side;
+		int col = t % side;
+
+		if (row == 0)
+		{
+			neighbours.push_back(ntiles);
+			neighbours.push_back(coord2index(row+1,col,side));
+		}
+		else if (row == (side-1))
+		{
+			neighbours.push_back(ntiles + 1);
+			neighbours.push_back(coord2index(row-1,col,side));
+		}
+		else
+		{
+			neighbours.push_back(coord2index(row+1,col,side));
+			neighbours.push_back(coord2index(row-1,col,side));
+		}
+
+		if (col == 0)
+		{
+			neighbours.push_back(ntiles+2);
+			neighbours.push_back(coord2index(row,col+1,side));
+
+			if (row > 0)
+				neighbours.push_back(coord2index(row-1,col+1,side));
+		}
+		else if (col == (side-1))
+		{
+			neighbours.push_back(ntiles + 3);
+			neighbours.push_back(coord2index(row,col-1,side));
+
+			if (row < (side-1))
+				neighbours.push_back(coord2index(row+1,col-1,side));
+		}
+		else
+		{
+			neighbours.push_back(coord2index(row,col+1,side));
+			neighbours.push_back(coord2index(row,col-1,side));
+
+			if (row > 0)
+				neighbours.push_back(coord2index(row-1,col+1,side));
+			if (row < (side-1))
+				neighbours.push_back(coord2index(row+1,col-1,side));
+
+		}
+	}
+	return neighbours;
 }
