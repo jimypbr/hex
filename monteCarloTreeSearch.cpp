@@ -10,7 +10,6 @@
 #include <chrono>
 #include "board.h"
 #include "subBoard.h"
-#include "mcNode.h"
 #include "hexGraph.h"
 #include "monteCarloTreeSearch.h"
 
@@ -83,10 +82,10 @@ double MonteCarloTreeSearch::opponentWinChance(Board &board, TileColour opponent
     return 0.0;
 }
 
-MCNode* MonteCarloTreeSearch::bestMove_(MCNode* node) const
+MonteCarloTreeSearch::MCNode* MonteCarloTreeSearch::bestMove_(MCNode* node) const
 {
     double best_score = -1;
-    MCNode* best_node = nullptr;
+    MonteCarloTreeSearch::MCNode* best_node = nullptr;
     int total_visits = 0;
     for (const auto& c : node->children)
     {
@@ -108,9 +107,9 @@ MCNode* MonteCarloTreeSearch::bestMove_(MCNode* node) const
     return best_node;
 }
 
-MCNode* MonteCarloTreeSearch::select_(MCNode* node, TileColour ai_colour) const
+MonteCarloTreeSearch::MCNode* MonteCarloTreeSearch::select_(MCNode* node, TileColour ai_colour) const
 {
-    MCNode* selected = nullptr;
+    MonteCarloTreeSearch::MCNode* selected = nullptr;
     double bestValue = -1.0;
 
     // use rng to break ties
@@ -140,7 +139,7 @@ MCNode* MonteCarloTreeSearch::select_(MCNode* node, TileColour ai_colour) const
     return selected;
 }
 
-MCNode* MonteCarloTreeSearch::expand_(MCNode* node) const
+MonteCarloTreeSearch::MCNode* MonteCarloTreeSearch::expand_(MCNode* node) const
 {
     SubBoard next_moves = getEmptySubBoard(node->game);
     const int n = next_moves.coords.size();
@@ -148,7 +147,7 @@ MCNode* MonteCarloTreeSearch::expand_(MCNode* node) const
 
     for (int i = 0; i < n; ++i)
     {
-        node->children.push_back( std::unique_ptr<MCNode>(new MCNode( node->game, child_colour ) ));
+        node->children.push_back( std::unique_ptr<MonteCarloTreeSearch::MCNode>(new MonteCarloTreeSearch::MCNode( node->game, child_colour ) ));
     }
 
     // populate children with next possible moves
