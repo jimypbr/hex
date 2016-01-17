@@ -62,7 +62,7 @@ private:
     std::default_random_engine rng_;
 
     MCNode* select_(MCNode* node, TileColour ai_colour) const;
-    MCNode* expand_(MCNode* node) const;
+    void expand_(MCNode* node) const;
     MCNode* bestMove_(MCNode* node) const;
     TileColour trialGame_(MCNode* node, TileColour ai_colour, bool is_first) const;
 

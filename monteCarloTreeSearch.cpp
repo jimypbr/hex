@@ -139,7 +139,7 @@ MonteCarloTreeSearch::MCNode* MonteCarloTreeSearch::select_(MCNode* node, TileCo
     return selected;
 }
 
-MonteCarloTreeSearch::MCNode* MonteCarloTreeSearch::expand_(MCNode* node) const
+void MonteCarloTreeSearch::expand_(MCNode* node) const
 {
     SubBoard next_moves = getEmptySubBoard(node->game);
     const int n = next_moves.coords.size();
@@ -158,14 +158,6 @@ MonteCarloTreeSearch::MCNode* MonteCarloTreeSearch::expand_(MCNode* node) const
         c->move = next_moves.coords[i];
         c->nEmpty = n-1;
     }
-
-    // return random next move
-    std::uniform_int_distribution<int> uniform_int(0,n-1);
-    auto ran = std::bind(uniform_int, rng_);
-    int next = ran();
-
-    auto cptr = node->children[next].get();
-    return cptr;
 }
 
 TileColour MonteCarloTreeSearch::trialGame_(MCNode* node, TileColour ai_colour, bool first_player) const
