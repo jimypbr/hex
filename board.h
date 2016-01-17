@@ -27,6 +27,16 @@ inline TileColour oppositeColour(TileColour c)
 }
 
 /**
+ * Utility constexpr to convert the enum class value to its integer value. Useful for debugging purposes.
+ */
+template <typename Enumeration>
+constexpr auto enum_as_integer(Enumeration const value) -> typename std::underlying_type<Enumeration>::type
+{
+    return static_cast<typename std::underlying_type<Enumeration>::type>(value);
+}
+
+
+/**
  * The Hex game board.
  * Contains the board dimensions and the TileColour (EMPTY / WHITE / BLACK) of
  * every tile in the board.
