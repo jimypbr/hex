@@ -23,15 +23,13 @@ private:
         int nWhiteWins = 0;
         int nBlackWins = 0;
         int nVisits = 0;
-        int nEmpty;
         int move;
-
-        Board game;
+        int nEmpty;
         TileColour colour;
 
         std::vector<std::unique_ptr<MCNode>> children;
 
-        MCNode(Board game, TileColour col) : game(game), colour(col)
+        MCNode(int move, int nEmpty, TileColour col) : move(move), nEmpty(nEmpty), colour(col)
         {}
 
         /**
@@ -62,9 +60,9 @@ private:
     std::default_random_engine rng_;
 
     MCNode* select_(MCNode* node, TileColour ai_colour) const;
-    void expand_(MCNode* node) const;
+    void expand_(MCNode* node, const Board& trial_board) const;
     MCNode* bestMove_(MCNode* node) const;
-    TileColour trialGame_(MCNode* node, TileColour ai_colour, bool is_first) const;
+    TileColour trialGame_(MCNode* node, const Board& trial_board, TileColour ai_colour, bool is_first) const;
 
 public:
     MonteCarloTreeSearch() {}

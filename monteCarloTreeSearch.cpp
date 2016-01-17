@@ -20,16 +20,15 @@ std::pair<int, int> MonteCarloTreeSearch::nextMove(Board &board, TileColour ai_c
 {
     const int Niter = 2000;
 
-    auto root = std::unique_ptr<MCNode>(new MCNode(board, oppositeColour(ai_colour)));
-
-    int count = 0;
+    int nEmpty = 0;
     for (int i = 0; i < board.ntiles(); ++i)
     {
         if (board[i] == TileColour::EMPTY)
-            count++;
+            nEmpty++;
     }
-    root->nEmpty = count;
-    expand_(root.get());
+
+    auto root = std::unique_ptr<MCNode>(new MCNode(-1, nEmpty, oppositeColour(ai_colour)));
+    expand_(root.get(), board);
 
     for (int i = 0; i < Niter; ++i)
     {
@@ -38,31 +37,34 @@ std::pair<int, int> MonteCarloTreeSearch::nextMove(Board &board, TileColour ai_c
 
         // select node to expand
         MCNode* cur = root.get();
+        Board trial_board = board;
         visited.push_back(cur);
 
         // find best leaf to expand
         while ( !(*cur).isLeaf() )
         {
             cur = select_(cur, ai_colour);
+            trial_board[cur->move] = cur->colour;   // add new move to trial
             visited.push_back(cur);
         }
         // is terminal node?
         if (cur->nEmpty == 0)
         {
             // update stats or not??
-            TileColour winner = HexGraph::fullBoardWinner(cur->game);
+            TileColour winner = HexGraph::fullBoardWinner(trial_board);
             for (const auto &node : visited)
                 node->updateStats(winner);
             continue;
         }
-        expand_(cur);
+        expand_(cur, trial_board);
 
         MCNode* newNode = select_(cur, ai_colour);
+        trial_board[newNode->move] = newNode->colour;
         visited.push_back(newNode);
 
         for (int t = 0; t < 30; ++t)
         {
-            TileColour winner = trialGame_(newNode, ai_colour, is_first);
+            TileColour winner = trialGame_(newNode, trial_board, ai_colour, is_first);
 
             for (const auto &node : visited)
                 node->updateStats(winner);
@@ -139,33 +141,27 @@ MonteCarloTreeSearch::MCNode* MonteCarloTreeSearch::select_(MCNode* node, TileCo
     return selected;
 }
 
-void MonteCarloTreeSearch::expand_(MCNode* node) const
+void MonteCarloTreeSearch::expand_(MCNode* node, const Board& trial_board) const
 {
-    SubBoard next_moves = getEmptySubBoard(node->game);
+    SubBoard next_moves = getEmptySubBoard(trial_board);
     const int n = next_moves.coords.size();
     TileColour child_colour = oppositeColour(node->colour);
-
-    for (int i = 0; i < n; ++i)
-    {
-        node->children.push_back( std::unique_ptr<MonteCarloTreeSearch::MCNode>(new MonteCarloTreeSearch::MCNode( node->game, child_colour ) ));
-    }
 
     // populate children with next possible moves
     for (int i = 0; i < n; ++i)
     {
-        auto const& c = node->children[i];
-        c->game[next_moves.coords[i]] = child_colour;
-        c->move = next_moves.coords[i];
-        c->nEmpty = n-1;
+        node->children.push_back(
+                std::unique_ptr<MonteCarloTreeSearch::MCNode>(
+                        new MonteCarloTreeSearch::MCNode(next_moves.coords[i], n - 1, child_colour) ));
     }
 }
 
-TileColour MonteCarloTreeSearch::trialGame_(MCNode* node, TileColour ai_colour, bool first_player) const
+TileColour MonteCarloTreeSearch::trialGame_(MCNode* node, const Board& trial_board, TileColour ai_colour, bool first_player) const
 {
-    SubBoard sub_board = getEmptySubBoard(node->game);
+    SubBoard sub_board = getEmptySubBoard(trial_board);
     int nempty = sub_board.pieces.size();
 
-    Board board = node->game;
+    Board simulation = trial_board;
 
     TileColour colour_player2;
     if (first_player)
@@ -187,8 +183,8 @@ TileColour MonteCarloTreeSearch::trialGame_(MCNode* node, TileColour ai_colour, 
     }
 
     std::shuffle(sub_board.pieces.begin(), sub_board.pieces.end(), rng);
-    insertSubBoard(sub_board, board);
-    TileColour winner = HexGraph::fullBoardWinner(board);
+    insertSubBoard(sub_board, simulation);
+    TileColour winner = HexGraph::fullBoardWinner(simulation);
 
     return winner;
 }
