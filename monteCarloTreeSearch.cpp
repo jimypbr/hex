@@ -171,7 +171,7 @@ MonteCarloTreeSearch::MCNode* MonteCarloTreeSearch::expand_(MCNode* node) const
 TileColour MonteCarloTreeSearch::trialGame_(MCNode* node, TileColour ai_colour, bool first_player) const
 {
     SubBoard sub_board = getEmptySubBoard(node->game);
-    int nempty = sub_board.colours.size();
+    int nempty = sub_board.pieces.size();
 
     Board board = node->game;
 
@@ -187,14 +187,14 @@ TileColour MonteCarloTreeSearch::trialGame_(MCNode* node, TileColour ai_colour, 
     // fill up the empty_tiles with black and white
     for (int i = 0; i < nplayer2; ++i)
     {
-        sub_board.colours[i] = colour_player2;
+        sub_board.pieces[i] = colour_player2;
     }
     for (int i = nplayer2; i < nempty; ++i)
     {
-        sub_board.colours[i] = colour_player1;
+        sub_board.pieces[i] = colour_player1;
     }
 
-    std::shuffle(sub_board.colours.begin(), sub_board.colours.end(), rng);
+    std::shuffle(sub_board.pieces.begin(), sub_board.pieces.end(), rng);
     insertSubBoard(sub_board, board);
     TileColour winner = HexGraph::fullBoardWinner(board);
 

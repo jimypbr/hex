@@ -19,7 +19,7 @@ static std::mt19937 rng(seed);
 std::pair<int, int> PureMonteCarlo::nextMove(Board &board, TileColour ai_colour, bool is_first) const
 {
     SubBoard empty_sub_board = getEmptySubBoard(board);
-    int nempty = empty_sub_board.colours.size();
+    int nempty = empty_sub_board.pieces.size();
 
     std::vector<double> next_move_score(nempty,0);
 
@@ -54,7 +54,7 @@ double PureMonteCarlo::opponentWinChance(Board &board, TileColour opponent_colou
 double PureMonteCarlo :: simulatePlay_(Board &board, const int niter, TileColour ai_colour, bool is_first) const
 {
     SubBoard sub_board = getEmptySubBoard(board);
-    int nempty = sub_board.colours.size();
+    int nempty = sub_board.pieces.size();
 
     // determine colour of first and second player
     // to decide how many different colour pieces fill the board
@@ -71,11 +71,11 @@ double PureMonteCarlo :: simulatePlay_(Board &board, const int niter, TileColour
     // fill up the empty_tiles with black and white
     for (int i = 0; i < nplayer2; ++i)
     {
-        sub_board.colours[i] = colour_player2;
+        sub_board.pieces[i] = colour_player2;
     }
     for (int i = nplayer2; i < nempty; ++i)
     {
-        sub_board.colours[i] = colour_player1;
+        sub_board.pieces[i] = colour_player1;
     }
 
     // perform monte carlo iterations
@@ -84,7 +84,7 @@ double PureMonteCarlo :: simulatePlay_(Board &board, const int niter, TileColour
     int nAI_wins = 0;
     for (int i = 0; i < niter; ++i)
     {
-        std::shuffle(sub_board.colours.begin(), sub_board.colours.end(), rng);
+        std::shuffle(sub_board.pieces.begin(), sub_board.pieces.end(), rng);
         insertSubBoard(sub_board, board);
         TileColour winner = HexGraph::fullBoardWinner(board);
 

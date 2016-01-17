@@ -40,7 +40,7 @@ SubBoard getEmptySubBoard(const Board& board)
     // pack both vectors into EmptyTiles struct and copy out
     SubBoard sb;
     sb.coords = std::move(coords);
-    sb.colours = std::move(colours);
+    sb.pieces = std::move(colours);
 
     return sb;
 }
@@ -48,12 +48,12 @@ SubBoard getEmptySubBoard(const Board& board)
 void insertSubBoard(const SubBoard& sub_board, Board& board)
 {
     // gather subboard into board
-    int size = sub_board.colours.size();
+    int size = sub_board.pieces.size();
 
     for (int i = 0; i < size; ++i)
     {
         const int addr = sub_board.coords[i];
-        board[addr] =  sub_board.colours[i];
+        board[addr] =  sub_board.pieces[i];
     }
 }
 

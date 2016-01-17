@@ -17,14 +17,14 @@ struct SubBoard
     // 1d coordinates of the empty tiles
     std::vector<int> coords;
 
-    // tile colours of the sub_board
-    std::vector<TileColour> colours;
+    // tile pieces of the sub_board
+    std::vector<TileColour> pieces;
 };
 
 /**
  * Insert the pieces and corresponding tiles of a sub-board
  *
- * @param sub_board A sub-board of tiles with colours to be inserted into the Board
+ * @param sub_board A sub-board of tiles with pieces to be inserted into the Board
  * @return board The hex board updated with the positions from the sub-board.
  */
 void insertSubBoard(const SubBoard& sub_board, Board& board);
