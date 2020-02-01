@@ -1,6 +1,7 @@
 # Readme
 
 Hex written in C++(11). Currently just has a CLI UI.
+AI uses Monte Carlo Tree Search.
 
 Screenshot!:
 
@@ -25,6 +26,15 @@ $ make hex
 $ ./hex
 ```
 
+On Ubuntu:
+
+```
+$ cd build
+$ cmake -DCMAKE_CXX_COMPILER=clang++ ..
+$ make hex
+$ ./hex
+```
+
 ## TODO
 * Add Pie Rule.
 * Add colour to the cli mode!
@@ -32,4 +42,5 @@ $ ./hex
 * Implement parallel MCTS
 
 ## License
-Copyright James Briggs &copy; 2015
+Copyright James Briggs &copy;
+
