@@ -40,6 +40,7 @@ $ ./hex
 * Add colour to the cli mode!
 * Implement parallel pure monte carlo
 * Implement parallel MCTS
+* Refactor build system see: https://blog.conan.io/2016/05/10/Programming-C++-with-the-4-Cs-Clang,-CMake,-CLion-and-Conan.html
 
 ## License
 Copyright James Briggs &copy;
