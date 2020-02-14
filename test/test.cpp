@@ -6,9 +6,9 @@
 #include "../hexGraph.h"
 #include "../board.h"
 
-static void printBoard_(const Board & board);
-static void test_white_win(const Board & board);
-static void test_black_win(const Board & board);
+static void printBoard_(const Board &board);
+static void test_white_win(const Board &board);
+static void test_black_win(const Board &board);
 static int test_number = 0;
 
 int main()
@@ -66,11 +66,11 @@ int main()
     // fill board up
     board = Board(5);
     int i = 4;
-    board[i*5+0] = TileColour::BLACK;
-    board[i*5+1] = TileColour::BLACK;
-    board[i*5+2] = TileColour::BLACK;
-    board[i*5+3] = TileColour::BLACK;
-    board[i*5+4] = TileColour::BLACK;
+    board[i * 5 + 0] = TileColour::BLACK;
+    board[i * 5 + 1] = TileColour::BLACK;
+    board[i * 5 + 2] = TileColour::BLACK;
+    board[i * 5 + 3] = TileColour::BLACK;
+    board[i * 5 + 4] = TileColour::BLACK;
 
     test_black_win(board);
 
@@ -108,7 +108,7 @@ int main()
     return 0;
 }
 
-static void test_black_win(const Board & board)
+static void test_black_win(const Board &board)
 {
     printBoard_(board);
 
@@ -123,7 +123,7 @@ static void test_black_win(const Board & board)
     std::cout << std::endl;
 }
 
-static void test_white_win(const Board & board)
+static void test_white_win(const Board &board)
 {
     printBoard_(board);
 
@@ -138,21 +138,21 @@ static void test_white_win(const Board & board)
     std::cout << std::endl;
 }
 
-static void printBoard_(const Board & board)
+static void printBoard_(const Board &board)
 {
 
     int board_side_ = board.side();
     std::cout << "   ";
     for (int col = 0; col < board_side_; ++col)
-        std::cout << col+1 << "  ";
+        std::cout << col + 1 << "  ";
     std::cout << std::endl;
 
-    for (int row=0; row < board_side_; ++row)
+    for (int row = 0; row < board_side_; ++row)
     {
-        std::cout << row+1 << "   ";
-        for (int col=0; col < board_side_; ++col)
+        std::cout << row + 1 << "   ";
+        for (int col = 0; col < board_side_; ++col)
         {
-            TileColour tile = board[row*board_side_+col];
+            TileColour tile = board[row * board_side_ + col];
             if (tile == TileColour::WHITE)
                 std::cout << "W  ";
             else if (tile == TileColour::BLACK)
@@ -160,11 +160,11 @@ static void printBoard_(const Board & board)
             else
                 std::cout << "-  ";
         }
-        std::cout << " " << row+1 << std::endl;
-        std::cout << std::string(row+1,' ');	// indent next row
+        std::cout << " " << row + 1 << std::endl;
+        std::cout << std::string(row + 1, ' '); // indent next row
     }
     std::cout << "    ";
     for (int col = 0; col < board_side_; ++col)
-        std::cout << col+1 << "  ";
+        std::cout << col + 1 << "  ";
     std::cout << std::endl;
 }

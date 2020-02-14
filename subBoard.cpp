@@ -6,7 +6,7 @@
 #include "board.h"
 #include "subBoard.h"
 
-SubBoard getEmptySubBoard(const Board& board)
+SubBoard getEmptySubBoard(const Board &board)
 {
     // count # of empty tiles
     int n_empty = 0;
@@ -23,12 +23,12 @@ SubBoard getEmptySubBoard(const Board& board)
 
     // coords of emtpy tiles
     int side = board.side();
-    int k=0;
-    for (int i=0; i<side; i++)
+    int k = 0;
+    for (int i = 0; i < side; i++)
     {
-        for (int j=0; j<side; j++)
+        for (int j = 0; j < side; j++)
         {
-            const int addr = i*side+j;
+            const int addr = i * side + j;
             if (board[addr] == TileColour::EMPTY)
             {
                 coords[k] = addr;
@@ -45,7 +45,7 @@ SubBoard getEmptySubBoard(const Board& board)
     return sb;
 }
 
-void insertSubBoard(const SubBoard& sub_board, Board& board)
+void insertSubBoard(const SubBoard &sub_board, Board &board)
 {
     // gather subboard into board
     int size = sub_board.pieces.size();
@@ -53,7 +53,6 @@ void insertSubBoard(const SubBoard& sub_board, Board& board)
     for (int i = 0; i < size; ++i)
     {
         const int addr = sub_board.coords[i];
-        board[addr] =  sub_board.pieces[i];
+        board[addr] = sub_board.pieces[i];
     }
 }
-

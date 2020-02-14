@@ -33,18 +33,18 @@ std::pair<int, int> MonteCarloTreeSearch::nextMove(Board &board, TileColour ai_c
     for (int i = 0; i < Niter; ++i)
     {
         // data structure to record line of play
-        std::vector<MCNode*> visited;
+        std::vector<MCNode *> visited;
 
         // select node to expand
-        MCNode* cur = root.get();
+        MCNode *cur = root.get();
         Board trial_board = board;
         visited.push_back(cur);
 
         // find best leaf to expand
-        while ( !(*cur).isLeaf() )
+        while (!(*cur).isLeaf())
         {
             cur = select_(cur, ai_colour);
-            trial_board[cur->move] = cur->colour;   // add new move to trial
+            trial_board[cur->move] = cur->colour; // add new move to trial
             visited.push_back(cur);
         }
         // is terminal node?
@@ -58,7 +58,7 @@ std::pair<int, int> MonteCarloTreeSearch::nextMove(Board &board, TileColour ai_c
         }
         expand_(cur, trial_board);
 
-        MCNode* newNode = select_(cur, ai_colour);
+        MCNode *newNode = select_(cur, ai_colour);
         trial_board[newNode->move] = newNode->colour;
         visited.push_back(newNode);
 
@@ -72,7 +72,7 @@ std::pair<int, int> MonteCarloTreeSearch::nextMove(Board &board, TileColour ai_c
     }
 
     // Select the node that gave the best score
-    MCNode* best_node = bestMove_(root.get());
+    MCNode *best_node = bestMove_(root.get());
 
     // Return that node's move
     int move = best_node->move;
@@ -84,18 +84,18 @@ double MonteCarloTreeSearch::opponentWinChance(Board &board, TileColour opponent
     return 0.0;
 }
 
-MonteCarloTreeSearch::MCNode* MonteCarloTreeSearch::bestMove_(MCNode* node) const
+MonteCarloTreeSearch::MCNode *MonteCarloTreeSearch::bestMove_(MCNode *node) const
 {
     double best_score = -1;
-    MonteCarloTreeSearch::MCNode* best_node = nullptr;
+    MonteCarloTreeSearch::MCNode *best_node = nullptr;
     int total_visits = 0;
-    for (const auto& c : node->children)
+    for (const auto &c : node->children)
     {
         double score;
         if (node->colour == TileColour::WHITE)
-            score = c->nBlackWins / (double) c->nVisits;
+            score = c->nBlackWins / (double)c->nVisits;
         else
-            score = c->nWhiteWins / (double) c->nVisits;
+            score = c->nWhiteWins / (double)c->nVisits;
 
         total_visits += c->nVisits;
 
@@ -109,18 +109,18 @@ MonteCarloTreeSearch::MCNode* MonteCarloTreeSearch::bestMove_(MCNode* node) cons
     return best_node;
 }
 
-MonteCarloTreeSearch::MCNode* MonteCarloTreeSearch::select_(MCNode* node, TileColour ai_colour) const
+MonteCarloTreeSearch::MCNode *MonteCarloTreeSearch::select_(MCNode *node, TileColour ai_colour) const
 {
-    MonteCarloTreeSearch::MCNode* selected = nullptr;
+    MonteCarloTreeSearch::MCNode *selected = nullptr;
     double bestValue = -1.0;
 
     // use rng to break ties
-    std::uniform_real_distribution<double> uniform_double(0,1);
+    std::uniform_real_distribution<double> uniform_double(0, 1);
     auto ran = std::bind(uniform_double, rng);
 
     // select node child with best uctValue. Use small random number
     // to break ties.
-    for (auto const& cptr : node->children )
+    for (auto const &cptr : node->children)
     {
         auto c = cptr.get();
 
@@ -130,8 +130,8 @@ MonteCarloTreeSearch::MCNode* MonteCarloTreeSearch::select_(MCNode* node, TileCo
         else
             nAIWins = c->nWhiteWins;
 
-        double uctValue = nAIWins / (c->nVisits + EPSILON_) + \
-                        sqrt( log( node->nVisits+1) / (c->nVisits + EPSILON_)) + ran()*EPSILON_ ;
+        double uctValue = nAIWins / (c->nVisits + EPSILON_) +
+                          sqrt(log(node->nVisits + 1) / (c->nVisits + EPSILON_)) + ran() * EPSILON_;
         if (uctValue > bestValue)
         {
             selected = c;
@@ -141,7 +141,7 @@ MonteCarloTreeSearch::MCNode* MonteCarloTreeSearch::select_(MCNode* node, TileCo
     return selected;
 }
 
-void MonteCarloTreeSearch::expand_(MCNode* node, const Board& trial_board) const
+void MonteCarloTreeSearch::expand_(MCNode *node, const Board &trial_board) const
 {
     SubBoard next_moves = getEmptySubBoard(trial_board);
     const int n = next_moves.coords.size();
@@ -151,12 +151,12 @@ void MonteCarloTreeSearch::expand_(MCNode* node, const Board& trial_board) const
     for (int i = 0; i < n; ++i)
     {
         node->children.push_back(
-                std::unique_ptr<MonteCarloTreeSearch::MCNode>(
-                        new MonteCarloTreeSearch::MCNode(next_moves.coords[i], n - 1, child_colour) ));
+            std::unique_ptr<MonteCarloTreeSearch::MCNode>(
+                new MonteCarloTreeSearch::MCNode(next_moves.coords[i], n - 1, child_colour)));
     }
 }
 
-TileColour MonteCarloTreeSearch::trialGame_(MCNode* node, const Board& trial_board, TileColour ai_colour, bool first_player) const
+TileColour MonteCarloTreeSearch::trialGame_(MCNode *node, const Board &trial_board, TileColour ai_colour, bool first_player) const
 {
     SubBoard sub_board = getEmptySubBoard(trial_board);
     int nempty = sub_board.pieces.size();

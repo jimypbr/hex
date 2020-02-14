@@ -21,7 +21,7 @@ std::pair<int, int> PureMonteCarlo::nextMove(Board &board, TileColour ai_colour,
     SubBoard empty_sub_board = getEmptySubBoard(board);
     int nempty = empty_sub_board.pieces.size();
 
-    std::vector<double> next_move_score(nempty,0);
+    std::vector<double> next_move_score(nempty, 0);
 
     // iterate through next possible moves for black and do monte carlo for each
     const int niter = NITER;
@@ -34,7 +34,7 @@ std::pair<int, int> PureMonteCarlo::nextMove(Board &board, TileColour ai_colour,
     }
 
     // return coord with highest next move score
-    int addr_best = std::distance(next_move_score.begin(), std::max_element(next_move_score.begin(), next_move_score.end()) );
+    int addr_best = std::distance(next_move_score.begin(), std::max_element(next_move_score.begin(), next_move_score.end()));
     int best_pos = empty_sub_board.coords[addr_best];
     int row = best_pos / board.side() + 1;
     int col = best_pos % board.side() + 1;
@@ -51,7 +51,7 @@ double PureMonteCarlo::opponentWinChance(Board &board, TileColour opponent_colou
  * Given a partially filled hex board, return the win/lose ratio for the aiplayer after niter number
  * of monteCarlo trials, which randomly fill the rest of the baord and then calculates who won.
  */
-double PureMonteCarlo :: simulatePlay_(Board &board, const int niter, TileColour ai_colour, bool is_first) const
+double PureMonteCarlo ::simulatePlay_(Board &board, const int niter, TileColour ai_colour, bool is_first) const
 {
     SubBoard sub_board = getEmptySubBoard(board);
     int nempty = sub_board.pieces.size();
@@ -92,5 +92,5 @@ double PureMonteCarlo :: simulatePlay_(Board &board, const int niter, TileColour
             nAI_wins++;
     }
 
-    return (double) nAI_wins / (double) niter;
+    return (double)nAI_wins / (double)niter;
 }
